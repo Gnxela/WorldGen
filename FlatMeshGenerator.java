@@ -2,18 +2,10 @@ package me.alexng.untitled.generate;
 
 import me.alexng.untitled.render.Mesh;
 import me.alexng.untitled.render.Texture;
-import me.alexng.untitled.render.util.AttributeBuilder;
+import me.alexng.untitled.render.util.AttributeStore;
 import org.joml.Vector3f;
 
-import static me.alexng.untitled.render.UntitledConstants.FLOAT_WIDTH;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-
 public class FlatMeshGenerator {
-
-	private static final AttributeBuilder ATTRIBUTE_BUILDER = new AttributeBuilder(
-			new AttributeBuilder.Attribute(0, 3, GL_FLOAT, false, 6 * FLOAT_WIDTH, 0),
-			new AttributeBuilder.Attribute(1, 3, GL_FLOAT, false, 6 * FLOAT_WIDTH, 3 * FLOAT_WIDTH)
-	);
 
 	/**
 	 * Generates a mesh that is  flat on the y axis.
@@ -59,6 +51,6 @@ public class FlatMeshGenerator {
 				indices[currentIndex++] = (x + 1) * numHeight + z;
 			}
 		}
-		return new Mesh(indices, vertices, new Texture[]{}, ATTRIBUTE_BUILDER);
+		return new Mesh(indices, vertices, new Texture[]{}, AttributeStore.VEC3F_VEC3F);
 	}
 }
