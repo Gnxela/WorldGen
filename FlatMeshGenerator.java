@@ -31,12 +31,6 @@ public class FlatMeshGenerator {
 			}
 		}
 
-		float[] vertices = new float[vectors.length * stride];
-		int offset = 0;
-		for (Vector3f vector : vectors) {
-			offset = PrimitiveGenerator.insertTriangleVertexData(offset, vertices, vector);
-		}
-
 		int numTriangles = (numWidth - 1) * (numHeight - 1) * 2;
 		int[] indices = new int[numTriangles * 3];
 		int currentIndex = 0;
@@ -50,6 +44,13 @@ public class FlatMeshGenerator {
 				indices[currentIndex++] = (x + 1) * numHeight + (z + 1);
 				indices[currentIndex++] = (x + 1) * numHeight + z;
 			}
+		}
+
+		float[] vertices = new float[vectors.length * stride];
+		int offset = 0;
+		Vector3f normal = new Vector3f();
+		for (Vector3f vector : vectors) {
+			offset += PrimitiveGenerator.insertTriangleVertexData(offset, vertices, vector, normal);
 		}
 		return new Mesh(indices, vertices, new Texture[]{}, AttributeStore.VEC3F_VEC3F);
 	}
