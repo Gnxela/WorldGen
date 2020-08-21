@@ -33,12 +33,9 @@ public class FlatMeshGenerator {
 
 		Vector3f[] vectors = new Vector3f[numWidth * numHeight];
 		for (int x = 0; x < numWidth; x++) {
-			float h = 1f;
 			for (int z = 0; z < numHeight; z++) {
-				Vector3f vector = new Vector3f(x * dx, h, z * dz);
-				h += dx / 10;
-				h *= 1 + dx / 20;
-				vectors[x * numWidth + z] = vector;
+				Vector3f vector = new Vector3f(x * dx, 0, z * dz);
+				vectors[x * numHeight + z] = vector;
 			}
 		}
 
@@ -53,13 +50,13 @@ public class FlatMeshGenerator {
 		int currentIndex = 0;
 		for (int x = 0; x < numWidth - 1; x++) {
 			for (int z = 0; z < numHeight - 1; z++) {
-				indices[currentIndex++] = x * numWidth + z;
-				indices[currentIndex++] = x * numWidth + (z + 1);
-				indices[currentIndex++] = (x + 1) * numWidth + z;
+				indices[currentIndex++] = x * numHeight + z;
+				indices[currentIndex++] = x * numHeight + (z + 1);
+				indices[currentIndex++] = (x + 1) * numHeight + z;
 
-				indices[currentIndex++] = x * numWidth + (z + 1);
-				indices[currentIndex++] = (x + 1) * numWidth + (z + 1);
-				indices[currentIndex++] = (x + 1) * numWidth + z;
+				indices[currentIndex++] = x * numHeight + (z + 1);
+				indices[currentIndex++] = (x + 1) * numHeight + (z + 1);
+				indices[currentIndex++] = (x + 1) * numHeight + z;
 			}
 		}
 		return new Mesh(indices, vertices, new Texture[]{}, ATTRIBUTE_BUILDER);
