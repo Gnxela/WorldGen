@@ -24,14 +24,20 @@ public class FlatMeshGenerator {
 	 * @param numHeight The number of vertices across the height of the mesh
 	 */
 	public static Mesh generateFlatMesh(float width, float height, int numWidth, int numHeight) {
+		if (width <= 0 || height <= 0 || numWidth < 2 || numHeight < 2) {
+			throw new IllegalArgumentException("Invalid arguments generateFlatMesh()");
+		}
 		final int stride = 6;
-		final float dx = width / numWidth;
-		final float dz = height / numHeight;
+		final float dx = width / (numWidth - 1);
+		final float dz = height / (numHeight - 1);
 
 		Vector3f[] vectors = new Vector3f[numWidth * numHeight];
 		for (int x = 0; x < numWidth; x++) {
+			float h = 1f;
 			for (int z = 0; z < numHeight; z++) {
-				Vector3f vector = new Vector3f(x * dx, 0, z * dz);
+				Vector3f vector = new Vector3f(x * dx, h, z * dz);
+				h += dx / 10;
+				h *= 1 + dx / 20;
 				vectors[x * numWidth + z] = vector;
 			}
 		}
