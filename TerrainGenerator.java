@@ -5,7 +5,7 @@ import me.alexng.untitled.render.Texture;
 import me.alexng.untitled.render.util.AttributeStore;
 import org.joml.Vector3f;
 
-public class FlatMeshGenerator {
+public class TerrainGenerator {
 
 	/**
 	 * Generates a mesh that is  flat on the y axis.
