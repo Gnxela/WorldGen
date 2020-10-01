@@ -9,12 +9,12 @@ public class MapData {
 
 	private final float[] data;
 	private final int width, height;
-	private float max = Float.MAX_VALUE, min = Float.MIN_VALUE;
+	private float max = Float.MIN_VALUE, min = Float.MAX_VALUE;
 
 	public MapData(int width, int height) {
-		this.data = new float[width * height];
 		this.width = width;
 		this.height = height;
+		this.data = new float[getSize()];
 	}
 
 	public Texture toTextureRGB(Texture.Type type) {
@@ -34,27 +34,37 @@ public class MapData {
 	}
 
 	public void setData(float value, int x, int y) {
+		if (value > max) {
+			max = value;
+		}
+		if (value < min) {
+			min = value;
+		}
 		data[y * width + x] = value;
+	}
+
+	public float getData(int i) {
+		return data[i];
 	}
 
 	public float getData(int x, int y) {
 		return data[y * width + x];
 	}
 
+	public float getDataNormalized(int i) {
+		return (getData(i) - min) / (max - min);
+	}
+
+	public float getDataNormalized(int x, int y) {
+		return (getData(x, y) - min) / (max - min);
+	}
+
 	public float getMax() {
 		return max;
 	}
 
-	public void setMax(float max) {
-		this.max = max;
-	}
-
 	public float getMin() {
 		return min;
-	}
-
-	public void setMin(float min) {
-		this.min = min;
 	}
 
 	public int getWidth() {
@@ -63,5 +73,9 @@ public class MapData {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public int getSize() {
+		return width * height;
 	}
 }
