@@ -18,16 +18,18 @@ public class MapData {
 	}
 
 	public Texture toTextureRGB(Texture.Type type) {
+		final int PIXEL_WIDTH = 3;
 		MemoryStack stack = MemoryStack.stackGet();
 		Texture texture = new Texture(type);
-		ByteBuffer buffer = stack.malloc(data.length * 3);
+		ByteBuffer buffer = stack.malloc(data.length * PIXEL_WIDTH);
 		for (int i = 0; i < data.length; i++) {
-			buffer.put((byte) 0xf);
-			buffer.put((byte) 0xf);
-			buffer.put((byte) 0xf);
+			buffer.put((byte) 255);
+			buffer.put((byte) 0);
+			buffer.put((byte) 0);
 		}
 		buffer.flip();
 		texture.load(width, height, buffer);
+		buffer.clear();
 		return texture;
 	}
 
