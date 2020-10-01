@@ -20,17 +20,26 @@ public class TerrainGenerator {
 	}
 
 	/**
-	 * Generates a mesh that is  flat on the y axis.
+	 * Generates a mesh using the specified {@code heightMap}. The color of the vertex is chosen by {@link HeightMap#heightToColor(float)}.
 	 *
 	 * @param width     The width of the generated mesh
 	 * @param length    The height of the generated mesh
 	 * @param numWidth  The number of vertices across the width of the mesh
 	 * @param numHeight The number of vertices across the height of the mesh
+	 * @
 	 */
 	public static Mesh generateMeshFromHeightMap(float width, float length, int numWidth, int numHeight, float amplification, HeightMap heightMap) {
-		return generateMesh(width, length, numWidth, numHeight, (x, y) -> amplification * heightMap.getDataNormalized(x, y), (x1, y1) -> HeightMap.heightToColor(heightMap.getDataNormalized(x1, y1)));
+		return generateMesh(width, length, numWidth, numHeight, (x, y) -> amplification * heightMap.getData(x, y), (x1, y1) -> HeightMap.heightToColor(heightMap.getDataNormalized(x1, y1)));
 	}
 
+	/**
+	 * @param width        The width of the generated mesh
+	 * @param length       The height of the generated mesh
+	 * @param numWidth     The number of vertices across the width of the mesh
+	 * @param numHeight    The number of vertices across the height of the mesh
+	 * @param heightMapper Maps a point (x, z) to a height y.
+	 * @param colorMapper  Maps a point (x, z) to a color.
+	 */
 	private static Mesh generateMesh(float width, float length, int numWidth, int numHeight, FloatMapper heightMapper, Vec3fMapper colorMapper) {
 		if (width <= 0 || length <= 0 || numWidth < 2 || numHeight < 2 || heightMapper == null || colorMapper == null) {
 			throw new IllegalArgumentException("Invalid arguments generateMesh()");
