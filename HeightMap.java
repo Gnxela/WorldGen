@@ -1,6 +1,7 @@
 package me.alexng.untitled.generate;
 
 import me.alexng.untitled.render.Texture;
+import org.joml.Vector3f;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
@@ -29,39 +30,32 @@ public class HeightMap extends MapData {
 		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
 		for (int i = 0; i < getSize(); i++) {
 			float normalizedValue = getDataNormalized(i);
-			if (normalizedValue < 0.2) {
-				buffer.put((byte) 0);
-				buffer.put((byte) 0);
-				buffer.put((byte) 122);
-			} else if (normalizedValue < 0.4) {
-				buffer.put((byte) 25);
-				buffer.put((byte) 25);
-				buffer.put((byte) 150);
-			} else if (normalizedValue < 0.5) {
-				buffer.put((byte) 240);
-				buffer.put((byte) 240);
-				buffer.put((byte) 64);
-			} else if (normalizedValue < 0.7) {
-				buffer.put((byte) 50);
-				buffer.put((byte) 220);
-				buffer.put((byte) 20);
-			} else if (normalizedValue < 0.8) {
-				buffer.put((byte) 16);
-				buffer.put((byte) 160);
-				buffer.put((byte) 0);
-			} else if (normalizedValue < 0.9) {
-				buffer.put((byte) 122);
-				buffer.put((byte) 122);
-				buffer.put((byte) 122);
-			} else {
-				buffer.put((byte) 255);
-				buffer.put((byte) 255);
-				buffer.put((byte) 255);
-			}
+			Vector3f color = HeightMap.heightToColor(normalizedValue);
+			buffer.put((byte) color.x);
+			buffer.put((byte) color.y);
+			buffer.put((byte) color.z);
 		}
 		buffer.flip();
 		texture.load(getWidth(), getHeight(), buffer);
 		buffer.clear();
 		return texture;
+	}
+
+	public static Vector3f heightToColor(float normalizedHeight) {
+		if (normalizedHeight < 0.2) {
+			return new Vector3f(0, 0, 122);
+		} else if (normalizedHeight < 0.4) {
+			return new Vector3f(25, 25, 150);
+		} else if (normalizedHeight < 0.5) {
+			return new Vector3f(240, 240, 64);
+		} else if (normalizedHeight < 0.7) {
+			return new Vector3f(50, 220, 20);
+		} else if (normalizedHeight < 0.8) {
+			return new Vector3f(16, 160, 0);
+		} else if (normalizedHeight < 0.9) {
+			return new Vector3f(122, 122, 122);
+		} else {
+			return new Vector3f(255, 255, 255);
+		}
 	}
 }
