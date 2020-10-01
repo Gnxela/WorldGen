@@ -38,6 +38,7 @@ public class HeightMap extends MapData {
 		buffer.flip();
 		texture.load(getWidth(), getHeight(), buffer);
 		buffer.clear();
+		MemoryUtil.memFree(buffer);
 		return texture;
 	}
 
