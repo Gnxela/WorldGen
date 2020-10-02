@@ -20,7 +20,7 @@ public class TerrainGenerator {
 	}
 
 	/**
-	 * Generates a mesh using the specified {@code heightMap}. The color of the vertex is chosen by {@link HeightMap#heightToColor(float)}.
+	 * Generates a mesh using the specified {@code heightMap}. The color of the vertex is chosen by {@link HeightMap#toColor(int, int)}.
 	 *
 	 * @param width     The width of the generated mesh
 	 * @param length    The height of the generated mesh
@@ -46,7 +46,7 @@ public class TerrainGenerator {
 		if (width <= 0 || length <= 0 || numWidth < 2 || numHeight < 2 || heightMapper == null || colorMapper == null) {
 			throw new IllegalArgumentException("Invalid arguments generateMesh()");
 		}
-		final int stride = 9;
+		final int stride = AttributeStore.VEC3F_VEC3F_VEC3F.getTotalSize();
 		final float dx = width / (numWidth - 1);
 		final float dz = length / (numHeight - 1);
 
@@ -61,6 +61,9 @@ public class TerrainGenerator {
 			}
 		}
 
+		Vector3f[] normals = new Vector3f[numWidth * numHeight];
+		// the number of surface normal added to the vector normal.
+		int[] normalContributions = new int[numWidth * numHeight];
 		int numTriangles = (numWidth - 1) * (numHeight - 1) * 2;
 		int[] indices = new int[numTriangles * 3];
 		int currentIndex = 0;
@@ -69,19 +72,31 @@ public class TerrainGenerator {
 				indices[currentIndex++] = x * numHeight + z;
 				indices[currentIndex++] = x * numHeight + (z + 1);
 				indices[currentIndex++] = (x + 1) * numHeight + z;
+				Vector3f normal = createNormal(vectors, indices[currentIndex - 3], indices[currentIndex - 2], indices[currentIndex - 1]);
+				setNormal(x * numHeight + z, normal, normals, normalContributions);
+				setNormal(x * numHeight + (z + 1), normal, normals, normalContributions);
+				setNormal((x + 1) * numHeight + z, normal, normals, normalContributions);
 
 				indices[currentIndex++] = x * numHeight + (z + 1);
 				indices[currentIndex++] = (x + 1) * numHeight + (z + 1);
 				indices[currentIndex++] = (x + 1) * numHeight + z;
+				normal = createNormal(vectors, indices[currentIndex - 3], indices[currentIndex - 2], indices[currentIndex - 1]);
+				setNormal(x * numHeight + (z + 1), normal, normals, normalContributions);
+				setNormal((x + 1) * numHeight + (z + 1), normal, normals, normalContributions);
+				setNormal((x + 1) * numHeight + z, normal, normals, normalContributions);
 			}
+		}
+
+		for (int i = 0; i < normals.length; i++) {
+			normals[i].div(normalContributions[i]);
 		}
 
 		float[] vertices = new float[vectors.length * stride];
 		int offset = 0;
-		Vector3f normal = new Vector3f();
 		for (int i = 0, vectorsLength = vectors.length; i < vectorsLength; i++) {
 			Vector3f vector = vectors[i];
 			Vector3f color = colors[i];
+			Vector3f normal = normals[i];
 			vertices[offset + 0] = vector.x;
 			vertices[offset + 1] = vector.y;
 			vertices[offset + 2] = vector.z;
@@ -94,6 +109,23 @@ public class TerrainGenerator {
 			offset += stride;
 		}
 		return new Mesh(indices, vertices, new Texture[]{}, AttributeStore.VEC3F_VEC3F_VEC3F);
+	}
+
+	private static void setNormal(int index, Vector3f normal, Vector3f[] normals, int[] normalContributions) {
+		if (normals[index] == null) {
+			normals[index] = normal;
+			normalContributions[index] = 1;
+		} else {
+			normals[index].add(normal);
+			normalContributions[index]++;
+		}
+	}
+
+	/**
+	 * Generates the normal for a triangle ABC
+	 */
+	private static Vector3f createNormal(Vector3f[] vectors, int a, int b, int c) {
+		return vectors[b].sub(vectors[a], new Vector3f()).cross(vectors[c].sub(vectors[a], new Vector3f())).normalize();
 	}
 
 	interface FloatMapper {
