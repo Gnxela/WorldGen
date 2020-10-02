@@ -29,7 +29,9 @@ public class TerrainGenerator {
 	 * @
 	 */
 	public static Mesh generateMeshFromHeightMap(float width, float length, int numWidth, int numHeight, float amplification, HeightMap heightMap) {
-		return generateMesh(width, length, numWidth, numHeight, (x, y) -> amplification * heightMap.getData(x, y), (x1, y1) -> HeightMap.heightToColor(heightMap.getDataNormalized(x1, y1)));
+		return generateMesh(width, length, numWidth, numHeight,
+				(x, y) -> amplification * heightMap.getData(x, y),
+				heightMap::toColor);
 	}
 
 	/**

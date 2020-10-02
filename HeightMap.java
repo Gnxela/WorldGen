@@ -29,8 +29,7 @@ public class HeightMap extends MapData {
 		Texture texture = new Texture(type);
 		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
 		for (int i = 0; i < getSize(); i++) {
-			float normalizedValue = getDataNormalized(i);
-			Vector3f color = HeightMap.heightToColor(normalizedValue);
+			Vector3f color = toColor(i);
 			buffer.put((byte) color.x);
 			buffer.put((byte) color.y);
 			buffer.put((byte) color.z);
@@ -42,7 +41,27 @@ public class HeightMap extends MapData {
 		return texture;
 	}
 
-	public static Vector3f heightToColor(float normalizedHeight) {
+	public Vector3f toColor(int i) {
+		float normalizedHeight = getDataNormalized2(i);
+		if (normalizedHeight < 0.2) {
+			return new Vector3f(0, 0, 122);
+		} else if (normalizedHeight < 0.4) {
+			return new Vector3f(25, 25, 150);
+		} else if (normalizedHeight < 0.5) {
+			return new Vector3f(240, 240, 64);
+		} else if (normalizedHeight < 0.7) {
+			return new Vector3f(50, 220, 20);
+		} else if (normalizedHeight < 0.8) {
+			return new Vector3f(16, 160, 0);
+		} else if (normalizedHeight < 0.9) {
+			return new Vector3f(122, 122, 122);
+		} else {
+			return new Vector3f(255, 255, 255);
+		}
+	}
+
+	public Vector3f toColor(int x, int y) {
+		float normalizedHeight = getDataNormalized2(x, y);
 		if (normalizedHeight < 0.2) {
 			return new Vector3f(0, 0, 122);
 		} else if (normalizedHeight < 0.4) {

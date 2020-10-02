@@ -51,12 +51,23 @@ public class MapData {
 		return data[y * width + x];
 	}
 
-	public float getDataNormalized(int i) {
+	public float getDataNormalizedMinMax(int i) {
 		return (getData(i) - min) / (max - min);
 	}
 
-	public float getDataNormalized(int x, int y) {
+	public float getDataNormalizedMinMax(int x, int y) {
 		return (getData(x, y) - min) / (max - min);
+	}
+
+	/**
+	 * Normalized to range (0, 1) from range (-2, 2).
+	 */
+	public float getDataNormalized2(int x, int y) {
+		return (getData(x, y) + 2) / 4;
+	}
+
+	public float getDataNormalized2(int i) {
+		return (getData(i) + 2) / 4;
 	}
 
 	public float getMax() {
