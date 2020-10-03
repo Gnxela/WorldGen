@@ -63,11 +63,11 @@ public class MapData {
 	 * Normalized to range (0, 1) from range (-2, 2).
 	 */
 	public float getDataNormalized2(int x, int y) {
-		return (getData(x, y) + 2) / 4;
+		return (getData(x, y) + 1) / 2;
 	}
 
 	public float getDataNormalized2(int i) {
-		return (getData(i) + 2) / 4;
+		return (getData(i) + 1) / 2;
 	}
 
 	public float getMax() {
