@@ -76,25 +76,14 @@ public abstract class MapData {
 	}
 
 	/**
-	 * Normalized to range (0, 1) from range (min, max).
+	 * Normalized to range (0, 1) from range (-1, 1).
 	 */
 	public float getDataNormalized(int i) {
-		return (getData(i) - min) / (max - min);
+		return (getData(i) + 1) / 2f;
 	}
 
 	public float getDataNormalized(int x, int y) {
 		return getDataNormalized(getIndex(x, y));
-	}
-
-	/**
-	 * Normalized to range (0, 1) from range (-1, 1).
-	 */
-	public float getDataNormalizedRange(int i) {
-		return (getData(i) + 1) / 2;
-	}
-
-	public float getDataNormalizedRange(int x, int y) {
-		return getDataNormalizedRange(getIndex(x, y));
 	}
 
 	public Sampler getSampler() {
