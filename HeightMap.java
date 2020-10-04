@@ -42,7 +42,7 @@ public class HeightMap extends MapData {
 	}
 
 	public Vector3f toColor(int i) {
-		float normalizedHeight = getDataNormalized2(i);
+		float normalizedHeight = getDataNormalized(i);
 		if (normalizedHeight < 0.2) {
 			return new Vector3f(0, 0, 122);
 		} else if (normalizedHeight < 0.4) {
@@ -61,21 +61,6 @@ public class HeightMap extends MapData {
 	}
 
 	public Vector3f toColor(int x, int y) {
-		float normalizedHeight = getDataNormalized2(x, y);
-		if (normalizedHeight < 0.2) {
-			return new Vector3f(0, 0, 122);
-		} else if (normalizedHeight < 0.4) {
-			return new Vector3f(25, 25, 150);
-		} else if (normalizedHeight < 0.5) {
-			return new Vector3f(240, 240, 64);
-		} else if (normalizedHeight < 0.7) {
-			return new Vector3f(50, 220, 20);
-		} else if (normalizedHeight < 0.8) {
-			return new Vector3f(16, 160, 0);
-		} else if (normalizedHeight < 0.9) {
-			return new Vector3f(122, 122, 122);
-		} else {
-			return new Vector3f(255, 255, 255);
-		}
+		return toColor(getIndex(x, y));
 	}
 }

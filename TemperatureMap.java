@@ -24,7 +24,7 @@ public class TemperatureMap extends MapData {
 				float sample = noise.GetNoise(x, y);
 				float normalized2Sample = (sample + 1) / 2;
 				float weightedTemp = temp * 0.65f + normalized2Sample * 0.35f;
-				float weightedTempLessHeight = Math.max(0, weightedTemp - (float) (Math.pow(heightMap.getDataNormalized2(x, y) + 1, 1.3) - 1) * 0.4f);
+				float weightedTempLessHeight = Math.max(0, weightedTemp - (float) (Math.pow(heightMap.getDataNormalized(x, y) + 1, 1.3) - 1) * 0.4f);
 				setData(weightedTempLessHeight, x, y);
 			}
 		}

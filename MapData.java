@@ -43,31 +43,38 @@ public class MapData {
 		data[y * width + x] = value;
 	}
 
+	int getIndex(int x, int y) {
+		return y * width + x;
+	}
+
 	public float getData(int i) {
 		return data[i];
 	}
 
 	public float getData(int x, int y) {
-		return data[y * width + x];
-	}
-
-	public float getDataNormalizedMinMax(int i) {
-		return (getData(i) - min) / (max - min);
-	}
-
-	public float getDataNormalizedMinMax(int x, int y) {
-		return (getData(x, y) - min) / (max - min);
+		return getData(getIndex(x, y));
 	}
 
 	/**
-	 * Normalized to range (0, 1) from range (-2, 2).
+	 * Normalized to range (0, 1) from range (min, max).
 	 */
-	public float getDataNormalized2(int x, int y) {
-		return (getData(x, y) + 1) / 2;
+	public float getDataNormalized(int i) {
+		return (getData(i) - min) / (max - min);
 	}
 
-	public float getDataNormalized2(int i) {
+	public float getDataNormalized(int x, int y) {
+		return getDataNormalized(getIndex(x, y));
+	}
+
+	/**
+	 * Normalized to range (0, 1) from range (-1, 1).
+	 */
+	public float getDataNormalizedRange(int i) {
 		return (getData(i) + 1) / 2;
+	}
+
+	public float getDataNormalizedRange(int x, int y) {
+		return getDataNormalizedRange(getIndex(x, y));
 	}
 
 	public float getMax() {
