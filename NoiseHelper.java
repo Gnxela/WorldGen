@@ -17,11 +17,6 @@ public class NoiseHelper {
 		noise.SetFractalGain(0.5f);
 		noise.SetFractalWeightedStrength(0);
 		noise.SetFractalPingPongStrength(2);
-
-		noise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.EuclideanSq);
-		noise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance);
-		noise.SetCellularJitter(1);
-
 		return noise;
 	}
 
@@ -38,11 +33,6 @@ public class NoiseHelper {
 		noise.SetFractalGain(0.5f);
 		noise.SetFractalWeightedStrength(0);
 		noise.SetFractalPingPongStrength(2);
-
-		noise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.EuclideanSq);
-		noise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance);
-		noise.SetCellularJitter(1);
-
 		return noise;
 	}
 
