@@ -13,10 +13,10 @@ public class TemperatureMap extends MapData {
 	public TemperatureMap(HeightMap heightMap) {
 		super(heightMap.getWidth(), heightMap.getHeight());
 		this.heightMap = heightMap;
-		init();
 	}
 
-	private void init() {
+	@Override
+	public void generate() {
 		FastNoiseLite noise = NoiseHelper.getTemperatureNoise();
 		for (int y = 0; y < getHeight(); y++) {
 			float temp = calculateHeatGradient(y);
@@ -48,6 +48,7 @@ public class TemperatureMap extends MapData {
 		return texture;
 	}
 
+	@Override
 	public Vector3f toColor(int i) {
 		float temp = getData(i);
 		return new Vector3f(temp * 255, 0, (1 - temp) * 255);

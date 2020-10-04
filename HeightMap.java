@@ -10,10 +10,10 @@ public class HeightMap extends MapData {
 
 	public HeightMap(int width, int height) {
 		super(width, height);
-		init();
 	}
 
-	private void init() {
+	@Override
+	public void generate() {
 		FastNoiseLite noise = NoiseHelper.getHeightMapNoise();
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
@@ -41,6 +41,7 @@ public class HeightMap extends MapData {
 		return texture;
 	}
 
+	@Override
 	public Vector3f toColor(int i) {
 		float normalizedHeight = getDataNormalized(i);
 		if (normalizedHeight < 0.2) {
@@ -58,9 +59,5 @@ public class HeightMap extends MapData {
 		} else {
 			return new Vector3f(255, 255, 255);
 		}
-	}
-
-	public Vector3f toColor(int x, int y) {
-		return toColor(getIndex(x, y));
 	}
 }
