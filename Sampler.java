@@ -46,7 +46,6 @@ public class Sampler {
 			indexY++;
 			dy += sampleDistanceY;
 		}
-		System.out.println("Generated points: " + points.size());
 		return points;
 	}
 
