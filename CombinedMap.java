@@ -23,6 +23,10 @@ public class CombinedMap {
 		temperatureMap.generate();
 	}
 
+	public CombinedMap sample(int x, int y, int width, int height, int numPointsX, int numPointsY) {
+		return new CombinedMap(new Sampler(x, y, width, height, numPointsX, numPointsY));
+	}
+
 	public CombinedMap sample(int numPointsX, int numPointsY) {
 		return new CombinedMap(new Sampler(0, 0, getWidth(), getHeight(), numPointsX, numPointsY));
 	}
