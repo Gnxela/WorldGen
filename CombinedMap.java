@@ -2,9 +2,9 @@ package me.alexng.untitled.generate;
 
 public class CombinedMap {
 
-	private Sampler sampler;
-	private HeightMap heightMap;
-	private TemperatureMap temperatureMap;
+	private final Sampler sampler;
+	private final HeightMap heightMap;
+	private final TemperatureMap temperatureMap;
 
 	public CombinedMap(Sampler sampler) {
 		this.sampler = sampler;

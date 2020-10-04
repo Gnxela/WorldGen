@@ -3,9 +3,12 @@ package me.alexng.untitled.generate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A class that samples points from a field. All coordinates are positive (subject to change).
+ */
 public class Sampler {
 
-	private int x, y, width, height, numPointsX, numPointsY, totalWidth, totalHeight;
+	private final int x, y, width, height, numPointsX, numPointsY, totalWidth, totalHeight;
 
 	public Sampler(int x, int y, int width, int height, int numPointsX, int numPointsY, int totalWidth, int totalHeight) {
 		this.x = x;

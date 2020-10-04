@@ -48,6 +48,6 @@ public class NoiseHelper {
 
 	private static int getSeed() {
 		return 0;
-		//return (int) System.currentTimeMillis() % 936523;
+		//return (int) System.currentTimeMillis() % 5177351;
 	}
 }

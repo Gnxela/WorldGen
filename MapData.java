@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
 public abstract class MapData {
 
 	private final float[] data;
-	private Sampler sampler;
+	private final Sampler sampler;
 	private float max = Float.MIN_VALUE, min = Float.MAX_VALUE;
 
 	public MapData(Sampler sampler) {
