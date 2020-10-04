@@ -5,23 +5,25 @@ import java.util.List;
 
 public class Sampler {
 
-	private int x, y, width, height, numPointsX, numPointsY;
+	private int x, y, width, height, numPointsX, numPointsY, totalWidth, totalHeight;
 
-	public Sampler(int x, int y, int width, int height, int numPointsX, int numPointsY) {
+	public Sampler(int x, int y, int width, int height, int numPointsX, int numPointsY, int totalWidth, int totalHeight) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.numPointsX = numPointsX;
 		this.numPointsY = numPointsY;
+		this.totalWidth = totalWidth;
+		this.totalHeight = totalHeight;
 	}
 
-	public Sampler(int x, int y, int width, int height) {
-		this(x, y, width, height, width, height);
+	public Sampler(int x, int y, int width, int height, int totalWidth, int totalHeight) {
+		this(x, y, width, height, width, height, totalWidth, totalHeight);
 	}
 
 	public Sampler(int width, int height) {
-		this(0, 0, width, height, width, height);
+		this(0, 0, width, height, width, height, width, height);
 	}
 
 	public List<Point> generatePoints() {
@@ -59,6 +61,14 @@ public class Sampler {
 
 	public int getNumPointsY() {
 		return numPointsY;
+	}
+
+	public int getTotalWidth() {
+		return totalWidth;
+	}
+
+	public int getTotalHeight() {
+		return totalHeight;
 	}
 
 	/**

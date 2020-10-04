@@ -24,8 +24,7 @@ public class TemperatureMap extends MapData {
 			final int x = point.getX();
 			final int indexX = point.getIndexX();
 			final int indexY = point.getIndexY();
-			// TODO: This doesn't work as intended for sub maps of the global map. 
-			float temp = calculateHeatGradient(indexY);
+			float temp = calculateHeatGradient(y);
 			float sample = noise.GetNoise(x, y);
 			float normalized2Sample = (sample + 1) / 2;
 			float weightedTemp = temp * 0.65f + normalized2Sample * 0.35f;
@@ -64,7 +63,7 @@ public class TemperatureMap extends MapData {
 	}
 
 	private float calculateHeatGradient(int y) {
-		float normalizedY = y / (float) getHeight();
+		float normalizedY = y / (float) getSampler().getTotalHeight();
 		float temp = (float) (Math.pow(normalizedY, 4) * 14.955 + Math.pow(normalizedY, 3) * -29.911 + Math.pow(normalizedY, 2) * 14.6948 + normalizedY * 0.26);
 		if (temp > 1) {
 			temp = 1;
