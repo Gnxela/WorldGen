@@ -8,7 +8,7 @@ public class NoiseHelper {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
-		noise.SetSeed((int) System.currentTimeMillis() % 936523);
+		noise.SetSeed(getSeed());
 		noise.SetFrequency(0.00125f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
@@ -29,7 +29,7 @@ public class NoiseHelper {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
-		noise.SetSeed((int) System.currentTimeMillis() % 936523);
+		noise.SetSeed(getSeed());
 		noise.SetFrequency(0.0013f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
@@ -44,5 +44,10 @@ public class NoiseHelper {
 		noise.SetCellularJitter(1);
 
 		return noise;
+	}
+
+	private static int getSeed() {
+		return 0;
+		//return (int) System.currentTimeMillis() % 936523;
 	}
 }
