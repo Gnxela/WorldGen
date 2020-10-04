@@ -8,26 +8,34 @@ import java.nio.ByteBuffer;
 
 public class TemperatureMap extends MapData {
 
-	private HeightMap heightMap;
+	private final HeightMap heightMap;
 
 	public TemperatureMap(HeightMap heightMap) {
-		super(heightMap.getWidth(), heightMap.getHeight());
+		super(heightMap.getSampler());
 		this.heightMap = heightMap;
 	}
 
 	@Override
 	public void generate() {
 		FastNoiseLite noise = NoiseHelper.getTemperatureNoise();
-		for (int y = 0; y < getHeight(); y++) {
-			float temp = calculateHeatGradient(y);
-			for (int x = 0; x < getWidth(); x++) {
-				float sample = noise.GetNoise(x, y);
-				float normalized2Sample = (sample + 1) / 2;
-				float weightedTemp = temp * 0.65f + normalized2Sample * 0.35f;
-				float weightedTempLessHeight = Math.max(0, weightedTemp - (float) (Math.pow(heightMap.getDataNormalized(x, y) + 1, 1.3) - 1) * 0.4f);
-				setData(weightedTempLessHeight, x, y);
-			}
+		for (Sampler.Point point : getSampler().generatePoints()) {
+			// TODO: Store the calculated temp in a map to avoid expensive recalculations
+			final int y = point.getY();
+			final int x = point.getX();
+			final int indexX = point.getIndexX();
+			final int indexY = point.getIndexY();
+			float temp = calculateHeatGradient(indexY);
+			float sample = noise.GetNoise(x, y);
+			float normalized2Sample = (sample + 1) / 2;
+			float weightedTemp = temp * 0.65f + normalized2Sample * 0.35f;
+			float weightedTempLessHeight = Math.max(0, weightedTemp - (float) (Math.pow(heightMap.getDataNormalized(indexX, indexY) + 1, 1.3) - 1) * 0.4f);
+			setData(weightedTempLessHeight, indexX, indexY);
 		}
+	}
+
+	@Override
+	public MapData sample(Sampler sampler) {
+		return null;
 	}
 
 	@Override

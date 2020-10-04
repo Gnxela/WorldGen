@@ -2,6 +2,8 @@ package me.alexng.untitled.generate;
 
 public class NoiseHelper {
 
+	// TODO: If we only need one instance of a particular noise setup, then make these variables.
+
 	public static FastNoiseLite getHeightMapNoise() {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);

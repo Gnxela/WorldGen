@@ -8,19 +8,22 @@ import java.nio.ByteBuffer;
 
 public class HeightMap extends MapData {
 
-	public HeightMap(int width, int height) {
-		super(width, height);
+	public HeightMap(Sampler sampler) {
+		super(sampler);
 	}
 
 	@Override
 	public void generate() {
 		FastNoiseLite noise = NoiseHelper.getHeightMapNoise();
-		for (int x = 0; x < getWidth(); x++) {
-			for (int y = 0; y < getHeight(); y++) {
-				float height = noise.GetNoise(x, y);
-				setData(height, x, y);
-			}
+		for (Sampler.Point point : getSampler().generatePoints()) {
+			float height = noise.GetNoise(point.getX(), point.getY());
+			setData(height, point.getIndexX(), point.getIndexY());
 		}
+	}
+
+	@Override
+	public MapData sample(Sampler sampler) {
+		return null;
 	}
 
 	@Override

@@ -9,16 +9,17 @@ import java.nio.ByteBuffer;
 public abstract class MapData {
 
 	private final float[] data;
-	private final int width, height;
+	private Sampler sampler;
 	private float max = Float.MIN_VALUE, min = Float.MAX_VALUE;
 
-	public MapData(int width, int height) {
-		this.width = width;
-		this.height = height;
+	public MapData(Sampler sampler) {
+		this.sampler = sampler;
 		this.data = new float[getSize()];
 	}
 
 	public abstract void generate();
+
+	public abstract MapData sample(Sampler sampler);
 
 	public Texture toTextureRGB(Texture.Type type) {
 		final int PIXEL_WIDTH = 3;
@@ -44,7 +45,12 @@ public abstract class MapData {
 		if (value < min) {
 			min = value;
 		}
-		data[y * width + x] = value;
+		int index = getIndex(x, y);
+		if (index > data.length) {
+			System.out.println(index);
+		} else {
+			data[index] = value;
+		}
 	}
 
 	public Vector3f toColor(int i) {
@@ -58,7 +64,7 @@ public abstract class MapData {
 	}
 
 	int getIndex(int x, int y) {
-		return y * width + x;
+		return y * getWidth() + x;
 	}
 
 	public float getData(int i) {
@@ -91,6 +97,10 @@ public abstract class MapData {
 		return getDataNormalizedRange(getIndex(x, y));
 	}
 
+	public Sampler getSampler() {
+		return sampler;
+	}
+
 	public float getMax() {
 		return max;
 	}
@@ -100,14 +110,14 @@ public abstract class MapData {
 	}
 
 	public int getWidth() {
-		return width;
+		return sampler.getNumPointsX();
 	}
 
 	public int getHeight() {
-		return height;
+		return sampler.getNumPointsY();
 	}
 
 	public int getSize() {
-		return width * height;
+		return sampler.getSize();
 	}
 }
