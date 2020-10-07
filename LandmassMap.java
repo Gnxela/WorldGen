@@ -6,6 +6,9 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A map that outputs -1 for water, 1 for land and [-1, 1] in between (the 'shore').
+ */
 public class LandmassMap extends MapData {
 
 	public LandmassMap(Sampler sampler) {
@@ -14,7 +17,7 @@ public class LandmassMap extends MapData {
 
 	@Override
 	public void generate(int seed) {
-		final float maxHeight = 0.1f, minHeight = 0.0f;
+		final float maxHeight = 0.2f, minHeight = 0.0f;
 		FastNoiseLite noise1 = NoiseHelper.getLandmassNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			float height = noise1.GetNoise(point.getX(), point.getY());

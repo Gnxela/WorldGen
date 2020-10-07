@@ -86,7 +86,7 @@ public abstract class MapData {
 	 * Normalized to range (0, 1) from range (-1, 1).
 	 */
 	public float getDataNormalized(int i) {
-		return (getData(i) + 1) / 2f;
+		return NoiseHelper.normalize(getData(i));
 	}
 
 	public float getDataNormalized(int x, int y) {

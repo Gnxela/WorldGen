@@ -6,6 +6,9 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A map that outputs the base height. 0 is sea level. (-1, 0] is water
+ */
 public class HeightMap extends MapData {
 
 	private final LandmassMap landmassMap;
@@ -17,17 +20,20 @@ public class HeightMap extends MapData {
 
 	@Override
 	public void generate(int seed) {
-		FastNoiseLite noise = NoiseHelper.getHeightMapNoise(seed);
+		FastNoiseLite landNoise = NoiseHelper.getLandHeightMapNoise(seed);
+		FastNoiseLite oceanNoise = NoiseHelper.getOceanHeightMapNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
-			float landmass = landmassMap.getData(point);
-			float height = noise.GetNoise(point.getX(), point.getY());
-			// TODO: Maybe change definition to 0 is sea level.
-			if (landmass == -1) {
-				setData(landmass, point.getIndexX(), point.getIndexY());
-			} else if (landmass == 1) {
+			float landmass = landmassMap.getDataNormalized(point);
+			if (landmass == 0) { // Ocean
+				float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
+				setData(-oceanDepth, point.getIndexX(), point.getIndexY());
+			} else if (landmass == 1) { // Land
+				float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
 				setData(height, point.getIndexX(), point.getIndexY());
-			} else {
-				setData(landmass * height, point.getIndexX(), point.getIndexY());
+			} else { // 'Shore'
+				float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
+				float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
+				setData(landmass * height - (1 - landmass) * oceanDepth, point.getIndexX(), point.getIndexY());
 			}
 		}
 	}
@@ -56,18 +62,16 @@ public class HeightMap extends MapData {
 
 	@Override
 	public Vector3f toColor(int i) {
-		float normalizedHeight = getDataNormalized(i);
-		if (normalizedHeight < 0.06) { // Deep water
-			return new Vector3f(0, 0, 122);
-		} else if (normalizedHeight < 0.15) { // Water
-			return new Vector3f(25, 25, 150);
-		} else if (normalizedHeight < 0.3) { // Sand
+		float height = getData(i);
+		if (height < 0) {
+			return new Vector3f(0, 0, 255 * (1 + height));
+		} else if (height < 0.1) { // Sand
 			return new Vector3f(240, 240, 64);
-		} else if (normalizedHeight < 0.5) { // Grass
+		} else if (height < 0.3) { // Grass
 			return new Vector3f(50, 220, 20);
-		} else if (normalizedHeight < 0.68) { // Dark grass
+		} else if (height < 0.65) { // Dark grass
 			return new Vector3f(16, 160, 0);
-		} else if (normalizedHeight < 0.8) { // Stone
+		} else if (height < 0.8) { // Stone
 			return new Vector3f(122, 122, 122);
 		} else { // Snow
 			return new Vector3f(255, 255, 255);
