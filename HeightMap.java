@@ -21,8 +21,11 @@ public class HeightMap extends MapData {
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			float landmass = landmassMap.getData(point);
 			float height = noise.GetNoise(point.getX(), point.getY());
-			if (landmass < 0) {
+			// TODO: Maybe change definition to 0 is sea level.
+			if (landmass == -1) {
 				setData(landmass, point.getIndexX(), point.getIndexY());
+			} else if (landmass == 1) {
+				setData(height, point.getIndexX(), point.getIndexY());
 			} else {
 				setData(landmass * height, point.getIndexX(), point.getIndexY());
 			}
