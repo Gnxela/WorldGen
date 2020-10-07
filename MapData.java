@@ -78,6 +78,10 @@ public abstract class MapData {
 		return getData(getIndex(x, y));
 	}
 
+	public float getData(Sampler.Point point) {
+		return getData(getIndex(point.getIndexX(), point.getIndexY()));
+	}
+
 	/**
 	 * Normalized to range (0, 1) from range (-1, 1).
 	 */
@@ -87,6 +91,10 @@ public abstract class MapData {
 
 	public float getDataNormalized(int x, int y) {
 		return getDataNormalized(getIndex(x, y));
+	}
+
+	public float getDataNormalized(Sampler.Point point) {
+		return getDataNormalized(getIndex(point.getIndexX(), point.getIndexY()));
 	}
 
 	public Sampler getSampler() {

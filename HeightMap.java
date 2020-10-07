@@ -8,16 +8,24 @@ import java.nio.ByteBuffer;
 
 public class HeightMap extends MapData {
 
-	public HeightMap(Sampler sampler) {
-		super(sampler);
+	private final LandmassMap landmassMap;
+
+	public HeightMap(LandmassMap landmassMap) {
+		super(landmassMap.getSampler());
+		this.landmassMap = landmassMap;
 	}
 
 	@Override
 	public void generate() {
 		FastNoiseLite noise = NoiseHelper.getHeightMapNoise();
 		for (Sampler.Point point : getSampler().generatePoints()) {
+			float landmass = landmassMap.getData(point);
 			float height = noise.GetNoise(point.getX(), point.getY());
-			setData(height, point.getIndexX(), point.getIndexY());
+			if (landmass < 0) {
+				setData(landmass, point.getIndexX(), point.getIndexY());
+			} else {
+				setData(landmass * height, point.getIndexX(), point.getIndexY());
+			}
 		}
 	}
 
@@ -27,9 +35,8 @@ public class HeightMap extends MapData {
 	}
 
 	@Override
-	public Texture toTextureRGB(Texture.Type type) {
+	public Texture toTextureRGB(Texture texture, Texture.Type type) {
 		final int PIXEL_WIDTH = 3;
-		Texture texture = new Texture(type);
 		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
 		for (int i = 0; i < getSize(); i++) {
 			Vector3f color = toColor(i);

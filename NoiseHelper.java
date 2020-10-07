@@ -4,6 +4,22 @@ public class NoiseHelper {
 
 	// TODO: If we only need one instance of a particular noise setup, then make these variables.
 
+	public static FastNoiseLite getLandmassNoise() {
+		FastNoiseLite noise = new FastNoiseLite();
+		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+		noise.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXYPlanes);
+		noise.SetSeed(getSeed());
+		noise.SetFrequency(0.0003f);
+
+		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+		noise.SetFractalOctaves(6);
+		noise.SetFractalLacunarity(2);
+		noise.SetFractalGain(0.5f);
+		noise.SetFractalWeightedStrength(0);
+		noise.SetFractalPingPongStrength(2);
+		return noise;
+	}
+
 	public static FastNoiseLite getHeightMapNoise() {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
@@ -37,7 +53,7 @@ public class NoiseHelper {
 	}
 
 	private static int getSeed() {
-		return 0;
-		//return (int) System.currentTimeMillis() % 5177351;
+		//return 0;
+		return (int) System.currentTimeMillis() % 5177351;
 	}
 }
