@@ -7,7 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.ByteBuffer;
 
 /**
- * A map that outputs the base height. 0 is sea level. (-1, 0] is water
+ * A map that outputs the base height. 0 is sea level. (-1, 0) is water, [0, 1) is land
  */
 public class HeightMap extends MapData {
 
@@ -63,9 +63,9 @@ public class HeightMap extends MapData {
 	@Override
 	public Vector3f toColor(int i) {
 		float height = getData(i);
-		if (height < 0) {
+		if (height <= 0) {
 			return new Vector3f(0, 0, 255 * (1 + height));
-		} else if (height < 0.1) { // Sand
+		} else if (height < 0.15) { // Sand
 			return new Vector3f(240, 240, 64);
 		} else if (height < 0.3) { // Grass
 			return new Vector3f(50, 220, 20);

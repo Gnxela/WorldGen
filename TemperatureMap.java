@@ -6,6 +6,9 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A map that outputs temperature in the range (-1, 1). -1 being colder than 1.
+ */
 public class TemperatureMap extends MapData {
 
 	private final HeightMap heightMap;
@@ -19,17 +22,14 @@ public class TemperatureMap extends MapData {
 	public void generate(int seed) {
 		FastNoiseLite noise = NoiseHelper.getTemperatureNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
-			// TODO: Store the calculated temp in a map to avoid expensive recalculations
-			final int y = point.getY();
-			final int x = point.getX();
-			final int indexX = point.getIndexX();
-			final int indexY = point.getIndexY();
-			float temp = calculateHeatGradient(y);
-			float sample = noise.GetNoise(x, y);
-			float normalized2Sample = (sample + 1) / 2;
-			float weightedTemp = temp * 0.65f + normalized2Sample * 0.35f;
-			float weightedTempLessHeight = Math.max(0, weightedTemp - (float) (Math.pow(heightMap.getDataNormalized(indexX, indexY) + 1, 1.3) - 1) * 0.4f);
-			setData(weightedTempLessHeight, indexX, indexY);
+			// TODO: Store the calculated latitude temp in a map to avoid expensive recalculations
+			float latitudeTemp = calculateHeatGradient(point.getY());
+			float sample = noise.GetNoise(point.getX(), point.getY());
+			float tempWithNoise = latitudeTemp * 0.8f + sample * 0.2f;
+			float height = Math.max(0, heightMap.getData(point));
+			float scaledHeight = (float) Math.pow(height, 1.5);
+			float tempWithNoiseLessHeight = NoiseHelper.clamp(tempWithNoise - scaledHeight * 0.5f - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
+			setData(tempWithNoiseLessHeight, point);
 		}
 	}
 
@@ -58,7 +58,7 @@ public class TemperatureMap extends MapData {
 
 	@Override
 	public Vector3f toColor(int i) {
-		float temp = getData(i);
+		float temp = getDataNormalized(i);
 		return new Vector3f(temp * 255, 0, (1 - temp) * 255);
 	}
 
@@ -71,6 +71,8 @@ public class TemperatureMap extends MapData {
 		if (temp < 0) {
 			temp = 0;
 		}
-		return temp;
+		temp = (float) Math.pow(temp, 1.1);
+		// Changing from (0, 1) to (-1, 1)
+		return temp * 2 - 1;
 	}
 }

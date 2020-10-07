@@ -41,6 +41,10 @@ public abstract class MapData {
 		return toTextureRGB(new Texture(type));
 	}
 
+	public void setData(float value, Sampler.Point point) {
+		setData(value, point.getIndexX(), point.getIndexY());
+	}
+
 	public void setData(float value, int x, int y) {
 		if (value > max) {
 			max = value;

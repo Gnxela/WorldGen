@@ -68,6 +68,10 @@ public class NoiseHelper {
 		return noise;
 	}
 
+	public static float clamp(float value) {
+		return Math.max(-1, Math.min(1, value));
+	}
+
 	public static float normalize(float data) {
 		return (data + 1) / 2f;
 	}
