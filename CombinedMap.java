@@ -14,10 +14,10 @@ public class CombinedMap {
 		this.temperatureMap = new TemperatureMap(heightMap);
 	}
 
-	public void generate() {
-		landmassMap.generate();
-		heightMap.generate();
-		temperatureMap.generate();
+	public void generate(int seed) {
+		landmassMap.generate(seed);
+		heightMap.generate(seed);
+		temperatureMap.generate(seed);
 	}
 
 	public CombinedMap sample(int x, int y, int width, int height, int numPointsX, int numPointsY) {

@@ -16,8 +16,8 @@ public class HeightMap extends MapData {
 	}
 
 	@Override
-	public void generate() {
-		FastNoiseLite noise = NoiseHelper.getHeightMapNoise();
+	public void generate(int seed) {
+		FastNoiseLite noise = NoiseHelper.getHeightMapNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			float landmass = landmassMap.getData(point);
 			float height = noise.GetNoise(point.getX(), point.getY());

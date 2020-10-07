@@ -16,8 +16,8 @@ public class TemperatureMap extends MapData {
 	}
 
 	@Override
-	public void generate() {
-		FastNoiseLite noise = NoiseHelper.getTemperatureNoise();
+	public void generate(int seed) {
+		FastNoiseLite noise = NoiseHelper.getTemperatureNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			// TODO: Store the calculated temp in a map to avoid expensive recalculations
 			final int y = point.getY();

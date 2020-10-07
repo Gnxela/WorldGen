@@ -17,7 +17,7 @@ public abstract class MapData {
 		this.data = new float[getSize()];
 	}
 
-	public abstract void generate();
+	public abstract void generate(int seed);
 
 	public abstract MapData sample(Sampler sampler);
 

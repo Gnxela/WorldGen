@@ -13,9 +13,9 @@ public class LandmassMap extends MapData {
 	}
 
 	@Override
-	public void generate() {
-		final float maxHeight = 0.2f, minHeight = 0.0f;
-		FastNoiseLite noise1 = NoiseHelper.getLandmassNoise();
+	public void generate(int seed) {
+		final float maxHeight = 0.1f, minHeight = 0.0f;
+		FastNoiseLite noise1 = NoiseHelper.getLandmassNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			float height = noise1.GetNoise(point.getX(), point.getY());
 			if (height > maxHeight) {

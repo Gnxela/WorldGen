@@ -4,11 +4,11 @@ public class NoiseHelper {
 
 	// TODO: If we only need one instance of a particular noise setup, then make these variables.
 
-	public static FastNoiseLite getLandmassNoise() {
+	public static FastNoiseLite getLandmassNoise(int seed) {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXYPlanes);
-		noise.SetSeed(getSeed());
+		noise.SetSeed(seed);
 		noise.SetFrequency(0.0003f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
@@ -20,11 +20,11 @@ public class NoiseHelper {
 		return noise;
 	}
 
-	public static FastNoiseLite getHeightMapNoise() {
+	public static FastNoiseLite getHeightMapNoise(int seed) {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
-		noise.SetSeed(getSeed());
+		noise.SetSeed(seed);
 		noise.SetFrequency(0.00125f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
@@ -36,11 +36,11 @@ public class NoiseHelper {
 		return noise;
 	}
 
-	public static FastNoiseLite getTemperatureNoise() {
+	public static FastNoiseLite getTemperatureNoise(int seed) {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
-		noise.SetSeed(getSeed());
+		noise.SetSeed(seed);
 		noise.SetFrequency(0.0013f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
@@ -52,8 +52,7 @@ public class NoiseHelper {
 		return noise;
 	}
 
-	private static int getSeed() {
-		//return 0;
+	public static int getSeed() {
 		return (int) System.currentTimeMillis() % 5177351;
 	}
 }
