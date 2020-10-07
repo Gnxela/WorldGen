@@ -21,9 +21,8 @@ public abstract class MapData {
 
 	public abstract MapData sample(Sampler sampler);
 
-	public Texture toTextureRGB(Texture.Type type) {
+	public Texture toTextureRGB(Texture texture, Texture.Type type) {
 		final int PIXEL_WIDTH = 3;
-		Texture texture = new Texture(type);
 		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
 		for (int i = 0; i < getSize(); i++) {
 			Vector3f color = toColor(i);
@@ -36,6 +35,10 @@ public abstract class MapData {
 		buffer.clear();
 		MemoryUtil.memFree(buffer);
 		return texture;
+	}
+
+	public Texture toTextureRGB(Texture.Type type) {
+		return toTextureRGB(new Texture(type), type);
 	}
 
 	public void setData(float value, int x, int y) {
