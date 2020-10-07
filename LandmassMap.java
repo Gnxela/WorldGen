@@ -14,7 +14,7 @@ public class LandmassMap extends MapData {
 
 	@Override
 	public void generate() {
-		final float maxHeight = 0.4f, minHeight = 0.2f;
+		final float maxHeight = 0.2f, minHeight = 0.0f;
 		FastNoiseLite noise1 = NoiseHelper.getLandmassNoise();
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			float height = noise1.GetNoise(point.getX(), point.getY());
@@ -34,7 +34,7 @@ public class LandmassMap extends MapData {
 	}
 
 	@Override
-	public Texture toTextureRGB(Texture texture, Texture.Type type) {
+	public Texture toTextureRGB(Texture texture) {
 		final int PIXEL_WIDTH = 3;
 		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
 		for (int i = 0; i < getSize(); i++) {
