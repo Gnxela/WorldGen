@@ -7,6 +7,7 @@ public class CombinedMap {
 	private final HeightMap heightMap;
 	private final TemperatureMap temperatureMap;
 	private final MoistureMap moistureMap;
+	private final BiomeMap biomeMap;
 
 	public CombinedMap(Sampler sampler) {
 		this.sampler = sampler;
@@ -14,6 +15,7 @@ public class CombinedMap {
 		this.heightMap = new HeightMap(landmassMap);
 		this.temperatureMap = new TemperatureMap(heightMap);
 		this.moistureMap = new MoistureMap(heightMap);
+		this.biomeMap = new BiomeMap(heightMap, temperatureMap, moistureMap);
 	}
 
 	public void generate(int seed) {
@@ -21,6 +23,7 @@ public class CombinedMap {
 		heightMap.generate(seed);
 		temperatureMap.generate(seed);
 		moistureMap.generate(seed);
+		biomeMap.generate(seed);
 	}
 
 	public CombinedMap sample(int x, int y, int width, int height, int numPointsX, int numPointsY) {
@@ -53,6 +56,10 @@ public class CombinedMap {
 
 	public MoistureMap getMoistureMap() {
 		return moistureMap;
+	}
+
+	public BiomeMap getBiomeMap() {
+		return biomeMap;
 	}
 
 	public int getWidth() {
