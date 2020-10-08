@@ -68,6 +68,22 @@ public class NoiseHelper {
 		return noise;
 	}
 
+	public static FastNoiseLite getMoistureNoise(int seed) {
+		FastNoiseLite noise = new FastNoiseLite();
+		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
+		noise.SetSeed(seed);
+		noise.SetFrequency(0.0005f);
+
+		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+		noise.SetFractalOctaves(4);
+		noise.SetFractalLacunarity(2);
+		noise.SetFractalGain(0.5f);
+		noise.SetFractalWeightedStrength(0);
+		noise.SetFractalPingPongStrength(2);
+		return noise;
+	}
+
 	public static float clamp(float value) {
 		return Math.max(-1, Math.min(1, value));
 	}
