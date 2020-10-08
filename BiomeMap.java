@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 public class BiomeMap extends MapData {
 
 	public enum Biome {
+		OCEAN(-2, new Vector3f()),
 		UNKNOWN(-1, new Vector3f(204, 0, 204)),
 		NONE(0, new Vector3f(0, 0, 0)),
 		TUNDRA(1, new Vector3f(96, 131, 112)),
@@ -23,7 +24,8 @@ public class BiomeMap extends MapData {
 		TEMPERATE_GRASSLAND(6, new Vector3f(164, 225, 99)), // COLD_DESERT
 		TROPICAL_RAINFOREST(7, new Vector3f(66, 123, 25)),
 		SAVANNA(8, new Vector3f(177, 209, 110)), // TROPICAL_SEASONAL_RAINFOREST
-		SUBTROPICAL_DESERT(9, new Vector3f(238, 218, 130));
+		SUBTROPICAL_DESERT(9, new Vector3f(238, 218, 130)),
+		ICE(10, new Vector3f(255, 255, 255));
 
 		private final int id;
 		private final Vector3f color;
@@ -55,11 +57,58 @@ public class BiomeMap extends MapData {
 	public void generate(int seed) {
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			if (heightMap.getData(point) <= 0) {
-				setData(Biome.NONE.id, point);
+				setData(Biome.OCEAN.id, point);
 			} else {
-				setData(Biome.UNKNOWN.id, point);
+				float temperature = temperatureMap.getDataNormalized(point);
+				float moisture = moistureMap.getDataNormalized(point);
+				int degrees = (int) (45 * temperature - 10);
+				int precipitation = (int) (400 * moisture);
+				Biome biome = classify(degrees, precipitation);
+				setData(biome.id, point);
 			}
 		}
+	}
+
+	private Biome classify(int degrees, int precipitation) {
+		if (degrees < 0) {
+			if (precipitation < 100) {
+				return Biome.TUNDRA;
+			}
+			return Biome.ICE;
+		} else if (degrees < 7) {
+			if (precipitation < 25) {
+				return Biome.TEMPERATE_GRASSLAND;
+			} else if (precipitation < 50) {
+				return Biome.WOODLAND;
+			} else if (precipitation < 200) {
+				return Biome.BOREAL_FOREST;
+			}
+			return Biome.BOREAL_FOREST;
+		} else if (degrees < 22) {
+			if (precipitation < 50) {
+				return Biome.TEMPERATE_GRASSLAND;
+			} else if (precipitation < 100) {
+				return Biome.WOODLAND;
+			} else if (precipitation < 200) {
+				return Biome.TEMPERATE_SEASONAL_RAINFOREST;
+			} else if (precipitation < 300) {
+				return Biome.TEMPERATE_RAINFOREST;
+			}
+			return Biome.TEMPERATE_RAINFOREST;
+		} else {
+			if (precipitation < 75) {
+				return Biome.SUBTROPICAL_DESERT;
+			} else if (precipitation < 250) {
+				return Biome.SAVANNA;
+			} else {
+				return Biome.TROPICAL_RAINFOREST;
+			}
+		}
+	}
+
+	@Override
+	public float getDataNormalized(int i) {
+		throw new RuntimeException("Unimplemented. See javadoc");
 	}
 
 	@Override
@@ -70,6 +119,9 @@ public class BiomeMap extends MapData {
 	@Override
 	public Vector3f toColor(int i) {
 		int biomeId = (int) getData(i);
+		if (biomeId == Biome.OCEAN.id) {
+			return heightMap.toColor(i);
+		}
 		return Biome.getBiomeFromId(biomeId).color;
 	}
 }

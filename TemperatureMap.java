@@ -19,12 +19,12 @@ public class TemperatureMap extends MapData {
 		FastNoiseLite noise = NoiseHelper.getTemperatureNoise(seed);
 		for (Sampler.Point point : getSampler().generatePoints()) {
 			// TODO: Store the calculated latitude temp in a map to avoid expensive recalculations
-			float latitudeTemp = calculateHeatGradient(point.getY());
-			float sample = noise.GetNoise(point.getX(), point.getY());
-			float tempWithNoise = latitudeTemp * 0.8f + sample * 0.2f;
-			float height = Math.max(0, heightMap.getData(point));
-			float scaledHeight = (float) Math.pow(height, 1.5);
-			float tempWithNoiseLessHeight = NoiseHelper.clamp(tempWithNoise - scaledHeight * 0.5f - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
+			float latitudeTemp = calculateHeatGradient(point.getY()); // (-1, 1)
+			float sample = noise.GetNoise(point.getX(), point.getY()); // (-1, 1)
+			float tempWithNoise = latitudeTemp * 0.8f + sample * 0.2f; // (-1, 1)
+			float height = Math.max(0, heightMap.getData(point)); // (0, 1)
+			float scaledHeight = (float) Math.pow(height, 2); // (0, 1)
+			float tempWithNoiseLessHeight = NoiseHelper.clamp(tempWithNoise - scaledHeight - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
 			setData(tempWithNoiseLessHeight, point);
 		}
 	}
