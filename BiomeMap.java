@@ -68,6 +68,7 @@ public class BiomeMap extends MapData {
 			}
 		}
 		List<Point> points = getSampler().generatePoints();
+		// TODO: This doesn't remove the micro-biomes when zoomed in.
 		floodSearch(points);
 	}
 
