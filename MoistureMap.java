@@ -7,6 +7,8 @@ import org.joml.Vector3f;
  */
 public class MoistureMap extends MapData {
 
+	public static final float HEIGHT_POWER = 2;
+
 	private final HeightMap heightMap;
 
 	public MoistureMap(HeightMap heightMap) {
@@ -23,7 +25,7 @@ public class MoistureMap extends MapData {
 			if (height <= 0) {
 				sample += height * -8;
 			} else {
-				sample += sample * Math.pow(height, 2) + sample * Math.pow(1 - height, 2);
+				sample += sample * Math.pow(height, HEIGHT_POWER) + sample * Math.pow(1 - height, HEIGHT_POWER);
 			}
 			float clampedSample = NoiseHelper.clamp(sample);
 			setData(clampedSample, point);

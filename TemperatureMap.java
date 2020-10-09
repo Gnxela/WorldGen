@@ -7,6 +7,10 @@ import org.joml.Vector3f;
  */
 public class TemperatureMap extends MapData {
 
+	// (0, 1). Percent of output that is noise before height pass.
+	public static final float NOISE_STRENGTH = 0.2f;
+	public static final float HEIGHT_POWER = 2;
+
 	private final HeightMap heightMap;
 
 	public TemperatureMap(HeightMap heightMap) {
@@ -21,9 +25,9 @@ public class TemperatureMap extends MapData {
 			// TODO: Store the calculated latitude temp in a map to avoid expensive recalculations
 			float latitudeTemp = calculateHeatGradient(point.getY()); // (-1, 1)
 			float sample = noise.GetNoise(point.getX(), point.getY()); // (-1, 1)
-			float tempWithNoise = latitudeTemp * 0.8f + sample * 0.2f; // (-1, 1)
+			float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // (-1, 1)
 			float height = Math.max(0, heightMap.getData(point)); // (0, 1)
-			float scaledHeight = (float) Math.pow(height, 2); // (0, 1)
+			float scaledHeight = (float) Math.pow(height, HEIGHT_POWER); // (0, 1)
 			float tempWithNoiseLessHeight = NoiseHelper.clamp(tempWithNoise - scaledHeight - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
 			setData(tempWithNoiseLessHeight, point);
 		}

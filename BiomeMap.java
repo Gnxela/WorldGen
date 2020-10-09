@@ -12,6 +12,8 @@ import java.util.stream.Stream;
  */
 public class BiomeMap extends MapData {
 
+	public static final int MICRO_BIOME_THRESHOLD = 110;
+
 	public enum Biome {
 		OCEAN(-2, new Vector3f()),
 		UNKNOWN(-1, new Vector3f(204, 0, 204)),
@@ -117,7 +119,7 @@ public class BiomeMap extends MapData {
 			Point point = unvisitedPoints.values().iterator().next();
 			int biomeId = (int) getData(point.getIndexX(), point.getIndexY());
 			int num = floodSearchPoint(point, biomeId, unvisitedPoints);
-			if (num < 110) {
+			if (num < MICRO_BIOME_THRESHOLD) {
 				floodSearchSurroundedPoint(point, biomeId);
 			}
 		}
