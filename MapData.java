@@ -10,7 +10,6 @@ public abstract class MapData {
 
 	private final float[] data;
 	private final Sampler sampler;
-	private float max = Float.MIN_VALUE, min = Float.MAX_VALUE;
 
 	public MapData(Sampler sampler) {
 		this.sampler = sampler;
@@ -46,12 +45,6 @@ public abstract class MapData {
 	}
 
 	public void setData(float value, int x, int y) {
-		if (value > max) {
-			max = value;
-		}
-		if (value < min) {
-			min = value;
-		}
 		int index = getIndex(x, y);
 		if (index > data.length) {
 			System.out.println(index);
@@ -103,14 +96,6 @@ public abstract class MapData {
 
 	public Sampler getSampler() {
 		return sampler;
-	}
-
-	public float getMax() {
-		return max;
-	}
-
-	public float getMin() {
-		return min;
 	}
 
 	public int getWidth() {
