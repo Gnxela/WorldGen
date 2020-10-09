@@ -18,7 +18,7 @@ public class HeightMap extends MapData {
 	public void generate(int seed) {
 		FastNoiseLite landNoise = NoiseHelper.getLandHeightMapNoise(seed);
 		FastNoiseLite oceanNoise = NoiseHelper.getOceanHeightMapNoise(seed);
-		for (Sampler.Point point : getSampler().generatePoints()) {
+		for (Point point : getSampler().generatePoints()) {
 			float landmass = landmassMap.getDataNormalized(point);
 			if (landmass == 0) { // Ocean
 				float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));

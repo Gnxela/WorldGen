@@ -40,7 +40,7 @@ public abstract class MapData {
 		return toTextureRGB(new Texture(type));
 	}
 
-	public void setData(float value, Sampler.Point point) {
+	public void setData(float value, Point point) {
 		setData(value, point.getIndexX(), point.getIndexY());
 	}
 
@@ -75,7 +75,7 @@ public abstract class MapData {
 		return getData(getIndex(x, y));
 	}
 
-	public float getData(Sampler.Point point) {
+	public float getData(Point point) {
 		return getData(getIndex(point.getIndexX(), point.getIndexY()));
 	}
 
@@ -90,7 +90,7 @@ public abstract class MapData {
 		return getDataNormalized(getIndex(x, y));
 	}
 
-	public float getDataNormalized(Sampler.Point point) {
+	public float getDataNormalized(Point point) {
 		return getDataNormalized(getIndex(point.getIndexX(), point.getIndexY()));
 	}
 

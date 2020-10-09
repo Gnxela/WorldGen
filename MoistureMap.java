@@ -17,7 +17,7 @@ public class MoistureMap extends MapData {
 	@Override
 	public void generate(int seed) {
 		FastNoiseLite noise = NoiseHelper.getMoistureNoise(seed);
-		for (Sampler.Point point : getSampler().generatePoints()) {
+		for (Point point : getSampler().generatePoints()) {
 			float sample = noise.GetNoise(point.getX(), point.getY());
 			float height = heightMap.getData(point);
 			if (height <= 0) {

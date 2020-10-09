@@ -2,7 +2,7 @@ package me.alexng.untitled.generate;
 
 import org.joml.Vector3f;
 
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,7 +55,7 @@ public class BiomeMap extends MapData {
 
 	@Override
 	public void generate(int seed) {
-		for (Sampler.Point point : getSampler().generatePoints()) {
+		for (Point point : getSampler().generatePoints()) {
 			if (heightMap.getData(point) <= 0) {
 				setData(Biome.OCEAN.id, point);
 			} else {
@@ -67,6 +67,8 @@ public class BiomeMap extends MapData {
 				setData(biome.id, point);
 			}
 		}
+		List<Point> points = getSampler().generatePoints();
+		floodSearch(points);
 	}
 
 	private Biome classify(int degrees, int precipitation) {
@@ -103,6 +105,72 @@ public class BiomeMap extends MapData {
 			} else {
 				return Biome.TROPICAL_RAINFOREST;
 			}
+		}
+	}
+
+
+	private void floodSearch(List<Point> points) {
+		HashMap<Integer, Point> unvisitedPoints = new HashMap<>(points.size());
+		points.forEach(p -> unvisitedPoints.put(p.hashCode(), p));
+		while (unvisitedPoints.size() > 0) {
+			Point point = unvisitedPoints.values().iterator().next();
+			int biomeId = (int) getData(point.getIndexX(), point.getIndexY());
+			int num = floodSearchPoint(point, biomeId, unvisitedPoints);
+			if (num < 110) {
+				floodSearchSurroundedPoint(point, biomeId);
+			}
+		}
+	}
+
+	private int floodSearchPoint(Point startingPoint, int originalBiomeId, HashMap<Integer, Point> unvisitedPoints) {
+		Queue<Point> fringe = new LinkedList<>();
+		fringe.add(startingPoint);
+		int n = 0;
+		while (fringe.size() > 0) {
+			Point point = fringe.remove();
+
+			if (!unvisitedPoints.containsKey(point.hashCode())) {
+				continue;
+			}
+
+			// TODO: To get biome border remove from unvisitedPoints here
+
+			if (!getSampler().containsIndex(point)) {
+				continue;
+			}
+			int biomeId = (int) getData(point);
+			if (biomeId != originalBiomeId) {
+				continue;
+			}
+			unvisitedPoints.remove(point.hashCode());
+			n++;
+			fringe.add(point.up());
+			fringe.add(point.down());
+			fringe.add(point.left());
+			fringe.add(point.right());
+		}
+		return n;
+	}
+
+	private void floodSearchSurroundedPoint(Point startingPoint, int originalBiomeId) {
+		Set<Point> visitedPoints = new HashSet<>();
+		Queue<Point> fringe = new LinkedList<>();
+		fringe.add(startingPoint);
+		while (fringe.size() > 0) {
+			Point point = fringe.remove();
+			if (visitedPoints.contains(point) || !getSampler().containsIndex(point)) {
+				continue;
+			}
+			visitedPoints.add(point);
+			int biomeId = (int) getData(point);
+			if (biomeId != originalBiomeId) {
+				continue;
+			}
+			setData(Biome.UNKNOWN.id, point);
+			fringe.add(point.up());
+			fringe.add(point.down());
+			fringe.add(point.left());
+			fringe.add(point.right());
 		}
 	}
 

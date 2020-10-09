@@ -49,6 +49,10 @@ public class Sampler {
 		return points;
 	}
 
+	public boolean containsIndex(Point point) {
+		return point.getIndexX() >= 0 && point.getIndexY() >= 0 && point.getIndexX() < numPointsX && point.getIndexY() < numPointsY;
+	}
+
 	public int getWidth() {
 		return width;
 	}
@@ -78,33 +82,5 @@ public class Sampler {
 	 */
 	public int getSize() {
 		return numPointsX * numPointsY;
-	}
-
-	static class Point {
-		// X and y are the real 'world' points, index x and y are index positions.
-		private int x, y, indexX, indexY;
-
-		public Point(int x, int y, int indexX, int indexY) {
-			this.x = x;
-			this.y = y;
-			this.indexX = indexX;
-			this.indexY = indexY;
-		}
-
-		public int getX() {
-			return x;
-		}
-
-		public int getY() {
-			return y;
-		}
-
-		public int getIndexX() {
-			return indexX;
-		}
-
-		public int getIndexY() {
-			return indexY;
-		}
 	}
 }

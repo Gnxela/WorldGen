@@ -17,7 +17,7 @@ public class TemperatureMap extends MapData {
 	@Override
 	public void generate(int seed) {
 		FastNoiseLite noise = NoiseHelper.getTemperatureNoise(seed);
-		for (Sampler.Point point : getSampler().generatePoints()) {
+		for (Point point : getSampler().generatePoints()) {
 			// TODO: Store the calculated latitude temp in a map to avoid expensive recalculations
 			float latitudeTemp = calculateHeatGradient(point.getY()); // (-1, 1)
 			float sample = noise.GetNoise(point.getX(), point.getY()); // (-1, 1)
