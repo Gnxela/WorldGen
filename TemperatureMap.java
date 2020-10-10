@@ -45,7 +45,10 @@ public class TemperatureMap extends MapData {
 
 	private float calculateHeatGradient(int y) {
 		float normalizedY = y / (float) getSampler().getTotalHeight();
-		float temp = (float) (Math.pow(normalizedY, 4) * 14.955 + Math.pow(normalizedY, 3) * -29.911 + Math.pow(normalizedY, 2) * 14.6948 + normalizedY * 0.26);
+		float normalizedY2 = normalizedY * normalizedY;
+		float normalizedY3 = normalizedY2 * normalizedY;
+		float normalizedY4 = normalizedY3 * normalizedY;
+		float temp = (float) (normalizedY4 * 14.955 + normalizedY3 * -29.911 + normalizedY2 * 14.6948 + normalizedY * 0.26);
 		if (temp > 1) {
 			temp = 1;
 		}
