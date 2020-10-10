@@ -27,15 +27,35 @@ public class CombinedMap {
 		moistureMap.setupGeneration(seed);
 		biomeMap.setupGeneration(seed);
 
+		Stopwatch total = new Stopwatch(), landmass = new Stopwatch(), height = new Stopwatch(), temp = new Stopwatch(), moisture = new Stopwatch(), biome = new Stopwatch();
+
+		total.start();
 		Iterator<Point> iterator = sampler.getPoints();
 		while (iterator.hasNext()) {
 			Point point = iterator.next();
+			landmass.start();
 			landmassMap.generatePoint(point);
+			landmass.stop();
+			height.start();
 			heightMap.generatePoint(point);
+			height.stop();
+			temp.start();
 			temperatureMap.generatePoint(point);
+			temp.stop();
+			moisture.start();
 			moistureMap.generatePoint(point);
+			moisture.stop();
+			biome.start();
 			biomeMap.generatePoint(point);
+			biome.stop();
 		}
+		total.stop();
+		System.out.println("Total: " + total.getElapsedSeconds() + "(100%)");
+		System.out.println("Landmass: " + landmass.getElapsedSeconds() + "(" + landmass.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
+		System.out.println("Height: " + height.getElapsedSeconds() + "(" + height.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
+		System.out.println("Temperature: " + temp.getElapsedSeconds() + "(" + temp.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
+		System.out.println("Moisture: " + moisture.getElapsedSeconds() + "(" + moisture.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
+		System.out.println("Biome: " + biome.getElapsedSeconds() + "(" + biome.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
 	}
 
 	public CombinedMap sample(int x, int y, int width, int height, int numPointsX, int numPointsY) {
