@@ -2,6 +2,8 @@ package me.alexng.untitled.generate;
 
 import org.joml.Vector3f;
 
+import java.util.HashMap;
+
 /**
  * A map that outputs temperature in the range (-1, 1). -1 being colder than 1.
  */
@@ -14,6 +16,7 @@ public class TemperatureMap extends MapData {
 	private final HeightMap heightMap;
 
 	private FastNoiseLite noise;
+	private HashMap<Integer, Float> gradientCache;
 
 	public TemperatureMap(HeightMap heightMap) {
 		super(heightMap.getSampler());
@@ -23,12 +26,17 @@ public class TemperatureMap extends MapData {
 	@Override
 	public void setupGeneration(int seed) {
 		noise = NoiseHelper.getTemperatureNoise(seed);
+		gradientCache = new HashMap<>();
 	}
 
 	@Override
 	public void generatePoint(Point point) {
-		// TODO: Store the calculated latitude temp in a map to avoid expensive recalculations
-		float latitudeTemp = calculateHeatGradient(point.getY()); // (-1, 1)
+		Float cachedGradient = gradientCache.get(point.getY());
+		if (cachedGradient == null) {
+			cachedGradient = calculateHeatGradient(point.getY());
+			gradientCache.put(point.getY(), cachedGradient);
+		}
+		float latitudeTemp = cachedGradient; // (-1, 1)
 		float sample = noise.GetNoise(point.getX(), point.getY()); // (-1, 1)
 		float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // (-1, 1)
 		float height = Math.max(0, heightMap.getData(point)); // (0, 1)
