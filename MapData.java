@@ -44,13 +44,8 @@ public abstract class MapData {
 		setData(value, point.getIndexX(), point.getIndexY());
 	}
 
-	public void setData(float value, int x, int y) {
-		int index = getIndex(x, y);
-		if (index > data.length) {
-			System.out.println(index);
-		} else {
-			data[index] = value;
-		}
+	private void setData(float value, int x, int y) {
+		data[getIndex(x, y)] = value;
 	}
 
 	public Vector3f toColor(int i) {
@@ -67,11 +62,11 @@ public abstract class MapData {
 		return y * getWidth() + x;
 	}
 
-	public float getData(int i) {
+	float getData(int i) {
 		return data[i];
 	}
 
-	public float getData(int x, int y) {
+	float getData(int x, int y) {
 		return getData(getIndex(x, y));
 	}
 

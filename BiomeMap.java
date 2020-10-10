@@ -115,7 +115,7 @@ public class BiomeMap extends MapData {
 		points.forEach(p -> unvisitedPoints.put(p.hashCode(), p));
 		while (unvisitedPoints.size() > 0) {
 			Point point = unvisitedPoints.values().iterator().next();
-			int biomeId = (int) getData(point.getIndexX(), point.getIndexY());
+			int biomeId = (int) getData(point);
 			int num = floodSearchPoint(point, biomeId, unvisitedPoints);
 			if (num < MICRO_BIOME_THRESHOLD) {
 				floodSearchSurroundedPoint(point, biomeId);

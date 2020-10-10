@@ -27,14 +27,14 @@ public class HeightMap extends MapData {
 		float landmass = landmassMap.getDataNormalized(point);
 		if (landmass == 0) { // Ocean
 			float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
-			setData(-oceanDepth, point.getIndexX(), point.getIndexY());
+			setData(-oceanDepth, point);
 		} else if (landmass == 1) { // Land
 			float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
-			setData(height, point.getIndexX(), point.getIndexY());
+			setData(height, point);
 		} else { // 'Shore'
 			float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
 			float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
-			setData(landmass * height - (1 - landmass) * oceanDepth, point.getIndexX(), point.getIndexY());
+			setData(landmass * height - (1 - landmass) * oceanDepth, point);
 		}
 	}
 

@@ -27,11 +27,11 @@ public class LandmassMap extends MapData {
 	public void generatePoint(Point point) {
 		float height = noise.GetNoise(point.getX(), point.getY());
 		if (height > SHORE_END) {
-			setData(1, point.getIndexX(), point.getIndexY());
+			setData(1, point);
 		} else if (height < SHORE_START) {
-			setData(-1, point.getIndexX(), point.getIndexY());
+			setData(-1, point);
 		} else {
-			setData((height - SHORE_START) / SHORE_WIDTH * 2 - 1, point.getIndexX(), point.getIndexY());
+			setData((height - SHORE_START) / SHORE_WIDTH * 2 - 1, point);
 		}
 	}
 
