@@ -15,6 +15,10 @@ public class Stopwatch {
 		return localElapsedTime;
 	}
 
+	public long getElapsedTime() {
+		return elapsedTime;
+	}
+
 	public float getElapsedSeconds() {
 		return elapsedTime / 1000000000f;
 	}

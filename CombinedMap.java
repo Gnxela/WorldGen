@@ -50,6 +50,8 @@ public class CombinedMap {
 			biome.stop();
 		}
 		total.stop();
+		System.out.println("Total points generated: " + getSampler().getSize());
+		System.out.println("ns per point: " + total.getElapsedTime() / (float) sampler.getSize());
 		System.out.println("Total: " + total.getElapsedSeconds() + "(100%)");
 		System.out.println("Landmass: " + landmass.getElapsedSeconds() + "(" + landmass.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
 		System.out.println("Height: " + height.getElapsedSeconds() + "(" + height.getElapsedSeconds() / total.getElapsedSeconds() * 100 + "%)");
