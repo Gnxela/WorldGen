@@ -30,7 +30,8 @@ public class Sampler {
 	}
 
 	public List<Point> generatePoints() {
-		List<Point> points = new ArrayList<>();
+		// TODO: This is very very slow.
+		List<Point> points = new ArrayList<>(numPointsX * numPointsY);
 		float sampleDistanceX = width / (float) numPointsX;
 		float sampleDistanceY = height / (float) numPointsY;
 		float dy = 0;

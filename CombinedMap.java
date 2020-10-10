@@ -19,11 +19,24 @@ public class CombinedMap {
 	}
 
 	public void generate(int seed) {
+		System.out.println("Generating map");
+		long start = System.nanoTime();
+		long subStart = start;
 		landmassMap.generate(seed);
+		System.out.println("Landmass: " + (System.nanoTime() - subStart) / 1000000000f);
+		subStart = System.nanoTime();
 		heightMap.generate(seed);
+		System.out.println("Height: " + (System.nanoTime() - subStart) / 1000000000f);
+		subStart = System.nanoTime();
 		temperatureMap.generate(seed);
+		System.out.println("Temperature: " + (System.nanoTime() - subStart) / 1000000000f);
+		subStart = System.nanoTime();
 		moistureMap.generate(seed);
+		System.out.println("Moisture: " + (System.nanoTime() - subStart) / 1000000000f);
+		subStart = System.nanoTime();
 		biomeMap.generate(seed);
+		System.out.println("Biome: " + (System.nanoTime() - subStart) / 1000000000f);
+		System.out.println("Total: " + (System.nanoTime() - start) / 1000000000f);
 	}
 
 	public CombinedMap sample(int x, int y, int width, int height, int numPointsX, int numPointsY) {
