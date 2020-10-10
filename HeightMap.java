@@ -43,6 +43,19 @@ public class HeightMap extends MapData {
 		float height = getData(i);
 		if (height <= 0) {
 			return new Vector3f(0, 0, 255 * (1 + height));
+		} else {
+			final Vector3f lowColor = new Vector3f(60, 209, 90);
+			final Vector3f middleColor = new Vector3f(251, 248, 80);
+			final Vector3f highColor = new Vector3f(250, 49, 74);
+			if (height < 0.5) {
+				return middleColor.mul(height).mul(2).add(lowColor.mul(0.5f - height).mul(2));
+			} else {
+				return highColor.mul(height - 0.5f).mul(2).add(middleColor.mul(1 - height).mul(2));
+			}
+		}
+		/*
+		if (height <= 0) {
+			return new Vector3f(0, 0, 255 * (1 + height));
 		} else if (height < 0.15) { // Sand
 			return new Vector3f(240, 240, 64);
 		} else if (height < 0.3) { // Grass
@@ -54,5 +67,6 @@ public class HeightMap extends MapData {
 		} else { // Snow
 			return new Vector3f(255, 255, 255);
 		}
+		 */
 	}
 }

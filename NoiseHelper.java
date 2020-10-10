@@ -84,6 +84,14 @@ public class NoiseHelper {
 		return noise;
 	}
 
+	/**
+	 * @param value Large value. Not (0, 1) or (-1. 1). Something like (0, 255)
+	 * @return
+	 */
+	public static float step(float value, int step) {
+		return (int) (value / step) * step;
+	}
+
 	public static float clamp(float value) {
 		return Math.max(-1, Math.min(1, value));
 	}
