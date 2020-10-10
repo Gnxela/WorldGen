@@ -1,6 +1,7 @@
 package me.alexng.untitled.generate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -29,7 +30,30 @@ public class Sampler {
 		this(0, 0, width, height, width, height, width, height);
 	}
 
-	public List<Point> generatePoints() {
+	public Iterator<Point> getPoints() {
+		return new Iterator<Point>() {
+
+			private final float sampleDistanceX = width / (float) numPointsX, sampleDistanceY = height / (float) numPointsY;
+			private int indexX = 0, indexY = 0;
+
+			@Override
+			public boolean hasNext() {
+				return indexX < numPointsX && indexY < numPointsY;
+			}
+
+			@Override
+			public Point next() {
+				Point nextPoint = new Point((int) (x + indexX * sampleDistanceX), (int) (x + indexY * sampleDistanceY), indexX, indexY);
+				if (++indexX >= numPointsX) {
+					indexY++;
+					indexX = 0;
+				}
+				return nextPoint;
+			}
+		};
+	}
+
+	private List<Point> generatePointsOld() {
 		// TODO: This is very very slow.
 		List<Point> points = new ArrayList<>(numPointsX * numPointsY);
 		float sampleDistanceX = width / (float) numPointsX;

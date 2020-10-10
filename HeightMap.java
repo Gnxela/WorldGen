@@ -9,34 +9,33 @@ public class HeightMap extends MapData {
 
 	private final LandmassMap landmassMap;
 
+	private FastNoiseLite landNoise, oceanNoise;
+
 	public HeightMap(LandmassMap landmassMap) {
 		super(landmassMap.getSampler());
 		this.landmassMap = landmassMap;
 	}
 
 	@Override
-	public void generate(int seed) {
-		FastNoiseLite landNoise = NoiseHelper.getLandHeightMapNoise(seed);
-		FastNoiseLite oceanNoise = NoiseHelper.getOceanHeightMapNoise(seed);
-		for (Point point : getSampler().generatePoints()) {
-			float landmass = landmassMap.getDataNormalized(point);
-			if (landmass == 0) { // Ocean
-				float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
-				setData(-oceanDepth, point.getIndexX(), point.getIndexY());
-			} else if (landmass == 1) { // Land
-				float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
-				setData(height, point.getIndexX(), point.getIndexY());
-			} else { // 'Shore'
-				float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
-				float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
-				setData(landmass * height - (1 - landmass) * oceanDepth, point.getIndexX(), point.getIndexY());
-			}
-		}
+	public void setupGeneration(int seed) {
+		landNoise = NoiseHelper.getLandHeightMapNoise(seed);
+		oceanNoise = NoiseHelper.getOceanHeightMapNoise(seed);
 	}
 
 	@Override
-	public MapData sample(Sampler sampler) {
-		return null;
+	public void generatePoint(Point point) {
+		float landmass = landmassMap.getDataNormalized(point);
+		if (landmass == 0) { // Ocean
+			float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
+			setData(-oceanDepth, point.getIndexX(), point.getIndexY());
+		} else if (landmass == 1) { // Land
+			float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
+			setData(height, point.getIndexX(), point.getIndexY());
+		} else { // 'Shore'
+			float height = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
+			float oceanDepth = NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
+			setData(landmass * height - (1 - landmass) * oceanDepth, point.getIndexX(), point.getIndexY());
+		}
 	}
 
 	@Override

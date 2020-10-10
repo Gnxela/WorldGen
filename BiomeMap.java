@@ -56,22 +56,21 @@ public class BiomeMap extends MapData {
 	}
 
 	@Override
-	public void generate(int seed) {
-		for (Point point : getSampler().generatePoints()) {
-			if (heightMap.getData(point) <= 0) {
-				setData(Biome.OCEAN.id, point);
-			} else {
-				float temperature = temperatureMap.getDataNormalized(point);
-				float moisture = moistureMap.getDataNormalized(point);
-				int degrees = (int) (45 * temperature - 10);
-				int precipitation = (int) (400 * moisture);
-				Biome biome = classify(degrees, precipitation);
-				setData(biome.id, point);
-			}
+	public void setupGeneration(int seed) {
+	}
+
+	@Override
+	public void generatePoint(Point point) {
+		if (heightMap.getData(point) <= 0) {
+			setData(Biome.OCEAN.id, point);
+		} else {
+			float temperature = temperatureMap.getDataNormalized(point);
+			float moisture = moistureMap.getDataNormalized(point);
+			int degrees = (int) (45 * temperature - 10);
+			int precipitation = (int) (400 * moisture);
+			Biome biome = classify(degrees, precipitation);
+			setData(biome.id, point);
 		}
-		List<Point> points = getSampler().generatePoints();
-		// TODO: This doesn't remove the micro-biomes when zoomed in.
-		floodSearch(points);
 	}
 
 	private Biome classify(int degrees, int precipitation) {
@@ -110,7 +109,6 @@ public class BiomeMap extends MapData {
 			}
 		}
 	}
-
 
 	private void floodSearch(List<Point> points) {
 		HashMap<Integer, Point> unvisitedPoints = new HashMap<>(points.size());
@@ -178,21 +176,16 @@ public class BiomeMap extends MapData {
 	}
 
 	@Override
-	public float getDataNormalized(int i) {
-		throw new RuntimeException("Unimplemented. See javadoc");
-	}
-
-	@Override
-	public MapData sample(Sampler sampler) {
-		return null;
-	}
-
-	@Override
 	public Vector3f toColor(int i) {
 		int biomeId = (int) getData(i);
 		if (biomeId == Biome.OCEAN.id) {
 			return heightMap.toColor(i);
 		}
 		return Biome.getBiomeFromId(biomeId).color;
+	}
+
+	@Override
+	public float getDataNormalized(int i) {
+		throw new RuntimeException("Unimplemented. See javadoc");
 	}
 }

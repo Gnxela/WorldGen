@@ -16,9 +16,9 @@ public abstract class MapData {
 		this.data = new float[getSize()];
 	}
 
-	public abstract void generate(int seed);
+	public abstract void setupGeneration(int seed);
 
-	public abstract MapData sample(Sampler sampler);
+	public abstract void generatePoint(Point point);
 
 	public Texture toTextureRGB(Texture texture) {
 		final int PIXEL_WIDTH = 3;

@@ -11,30 +11,29 @@ public class MoistureMap extends MapData {
 
 	private final HeightMap heightMap;
 
+	private FastNoiseLite noise;
+
 	public MoistureMap(HeightMap heightMap) {
 		super(heightMap.getSampler());
 		this.heightMap = heightMap;
 	}
 
 	@Override
-	public void generate(int seed) {
-		FastNoiseLite noise = NoiseHelper.getMoistureNoise(seed);
-		for (Point point : getSampler().generatePoints()) {
-			float sample = noise.GetNoise(point.getX(), point.getY());
-			float height = heightMap.getData(point);
-			if (height <= 0) {
-				sample += height * -8;
-			} else {
-				sample += sample * Math.pow(height, HEIGHT_POWER) + sample * Math.pow(1 - height, HEIGHT_POWER);
-			}
-			float clampedSample = NoiseHelper.clamp(sample);
-			setData(clampedSample, point);
-		}
+	public void setupGeneration(int seed) {
+		noise = NoiseHelper.getMoistureNoise(seed);
 	}
 
 	@Override
-	public MapData sample(Sampler sampler) {
-		return null;
+	public void generatePoint(Point point) {
+		float sample = noise.GetNoise(point.getX(), point.getY());
+		float height = heightMap.getData(point);
+		if (height <= 0) {
+			sample += height * -8;
+		} else {
+			sample += sample * Math.pow(height, HEIGHT_POWER) + sample * Math.pow(1 - height, HEIGHT_POWER);
+		}
+		float clampedSample = NoiseHelper.clamp(sample);
+		setData(clampedSample, point);
 	}
 
 	@Override

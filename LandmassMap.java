@@ -12,28 +12,27 @@ public class LandmassMap extends MapData {
 	private static final float SHORE_WIDTH = 0.6f;
 	private static final float SHORE_END = SHORE_START + SHORE_WIDTH;
 
+	private FastNoiseLite noise;
+
 	public LandmassMap(Sampler sampler) {
 		super(sampler);
 	}
 
 	@Override
-	public void generate(int seed) {
-		FastNoiseLite noise1 = NoiseHelper.getLandmassNoise(seed);
-		for (Point point : getSampler().generatePoints()) {
-			float height = noise1.GetNoise(point.getX(), point.getY());
-			if (height > SHORE_END) {
-				setData(1, point.getIndexX(), point.getIndexY());
-			} else if (height < SHORE_START) {
-				setData(-1, point.getIndexX(), point.getIndexY());
-			} else {
-				setData((height - SHORE_START) / SHORE_WIDTH * 2 - 1, point.getIndexX(), point.getIndexY());
-			}
-		}
+	public void setupGeneration(int seed) {
+		noise = NoiseHelper.getLandmassNoise(seed);
 	}
 
 	@Override
-	public MapData sample(Sampler sampler) {
-		return null;
+	public void generatePoint(Point point) {
+		float height = noise.GetNoise(point.getX(), point.getY());
+		if (height > SHORE_END) {
+			setData(1, point.getIndexX(), point.getIndexY());
+		} else if (height < SHORE_START) {
+			setData(-1, point.getIndexX(), point.getIndexY());
+		} else {
+			setData((height - SHORE_START) / SHORE_WIDTH * 2 - 1, point.getIndexX(), point.getIndexY());
+		}
 	}
 
 	@Override
