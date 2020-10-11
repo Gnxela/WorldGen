@@ -1,11 +1,14 @@
-package me.alexng.untitled.generate;
+package me.alexng.untitled.generate.pipeline;
 
-import org.joml.Vector3f;
+import me.alexng.untitled.generate.FastNoiseLite;
+import me.alexng.untitled.generate.NoiseHelper;
+import me.alexng.untitled.generate.Point;
+import me.alexng.untitled.generate.Sampler;
 
 /**
  * A map that outputs -1 for water, 1 for land and [-1, 1] in between (the 'shore').
  */
-public class LandmassMap extends MapData {
+public class LandmassPipeWorker implements PipeWorker {
 
 	// x < SHORE_START -> biome(x) == OCEAN. x > SHORE_END -> biome(x) != OCEAN
 	private static final float SHORE_START = -0.2f;
@@ -14,30 +17,20 @@ public class LandmassMap extends MapData {
 
 	private FastNoiseLite noise;
 
-	public LandmassMap(Sampler sampler) {
-		super(sampler);
-	}
-
 	@Override
-	public void setupGeneration(int seed) {
+	public void setup(int seed, Sampler sampler) {
 		noise = NoiseHelper.getLandmassNoise(seed);
 	}
 
 	@Override
-	public void generatePoint(Point point) {
+	public float process(Point point, float... data) {
 		float height = noise.GetNoise(point.getX(), point.getY());
 		if (height > SHORE_END) {
-			setData(1, point);
+			return 1;
 		} else if (height < SHORE_START) {
-			setData(-1, point);
+			return -1;
 		} else {
-			setData((height - SHORE_START) / SHORE_WIDTH * 2 - 1, point);
+			return (height - SHORE_START) / SHORE_WIDTH * 2 - 1;
 		}
-	}
-
-	@Override
-	public Vector3f toColor(int i) {
-		float normalizedHeight = getDataNormalized(i);
-		return new Vector3f(255 * normalizedHeight);
 	}
 }

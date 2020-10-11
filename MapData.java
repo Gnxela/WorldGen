@@ -6,7 +6,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 
-public abstract class MapData {
+public class MapData {
 
 	private final float[] data;
 	private final Sampler sampler;
@@ -16,15 +16,11 @@ public abstract class MapData {
 		this.data = new float[getSize()];
 	}
 
-	public abstract void setupGeneration(int seed);
-
-	public abstract void generatePoint(Point point);
-
-	public Texture toTextureRGB(Texture texture) {
+	public Texture toTextureRGB(Texture texture, ColorMaps.ColorMap colorMap) {
 		final int PIXEL_WIDTH = 3;
 		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
 		for (int i = 0; i < getSize(); i++) {
-			Vector3f color = toColor(i);
+			Vector3f color = colorMap.toColor(getData(i));
 			buffer.put((byte) color.x);
 			buffer.put((byte) color.y);
 			buffer.put((byte) color.z);
@@ -36,8 +32,8 @@ public abstract class MapData {
 		return texture;
 	}
 
-	public Texture toTextureRGB(Texture.Type type) {
-		return toTextureRGB(new Texture(type));
+	public Texture toTextureRGB(Texture.Type type, ColorMaps.ColorMap colorMap) {
+		return toTextureRGB(new Texture(type), colorMap);
 	}
 
 	public void setData(float value, Point point) {
@@ -46,16 +42,6 @@ public abstract class MapData {
 
 	private void setData(float value, int x, int y) {
 		data[getIndex(x, y)] = value;
-	}
-
-	public Vector3f toColor(int i) {
-		float normalizedData = getDataNormalized(i);
-		float greyScale = normalizedData * 255;
-		return new Vector3f(greyScale, greyScale, greyScale);
-	}
-
-	public Vector3f toColor(int x, int y) {
-		return toColor(getIndex(x, y));
 	}
 
 	int getIndex(int x, int y) {

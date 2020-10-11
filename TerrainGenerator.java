@@ -20,34 +20,6 @@ public class TerrainGenerator {
 	}
 
 	/**
-	 * Generates a mesh using the specified {@code heightMap}. The color of the vertex is chosen by {@link HeightMap#toColor(int, int)}.
-	 *
-	 * @param width     The width of the generated mesh
-	 * @param length    The height of the generated mesh
-	 * @param numWidth  The number of vertices across the width of the mesh
-	 * @param numHeight The number of vertices across the height of the mesh
-	 * @
-	 */
-	public static Mesh generateMeshFromHeightMap(float width, float length, int numWidth, int numHeight, float amplification, HeightMap heightMap) {
-		return generateMesh(width, length, numWidth, numHeight,
-				(x, y) -> amplification * heightMap.getData(x, y),
-				heightMap::toColor);
-	}
-
-	/**
-	 * Generates a mesh using the specified {@code heightMap}. The color of the vertex is chosen by {@link HeightMap#toColor(int, int)}.
-	 *
-	 * @param width  The width of the generated mesh
-	 * @param length The height of the generated mesh
-	 * @
-	 */
-	public static Mesh generateMeshFromMap(float width, float length, float amplification, CombinedMap combinedMap) {
-		return generateMesh(width, length, combinedMap.getWidth(), combinedMap.getHeight(),
-				(x, y) -> amplification * combinedMap.getHeightMap().getData(x, y),
-				(x, y) -> combinedMap.getBiomeMap().toColor(x, y));
-	}
-
-	/**
 	 * @param width        The width of the generated mesh
 	 * @param length       The height of the generated mesh
 	 * @param numWidth     The number of vertices across the width of the mesh

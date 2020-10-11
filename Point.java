@@ -1,6 +1,6 @@
 package me.alexng.untitled.generate;
 
-class Point {
+public class Point {
 	// X and y are the real 'world' points, index x and y are index positions.
 	private int x, y, indexX, indexY;
 
