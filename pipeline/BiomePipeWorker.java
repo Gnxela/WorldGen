@@ -1,5 +1,6 @@
 package me.alexng.untitled.generate.pipeline;
 
+import me.alexng.untitled.generate.NoiseHelper;
 import me.alexng.untitled.generate.Point;
 import me.alexng.untitled.generate.Sampler;
 import org.joml.Vector3f;
@@ -53,8 +54,8 @@ public class BiomePipeWorker implements PipeWorker {
 		if (data[0] <= 0) {
 			return Biome.OCEAN.id;
 		} else {
-			float temperature = data[1];
-			float moisture = data[2];
+			float temperature = NoiseHelper.normalize(data[1]);
+			float moisture = NoiseHelper.normalize(data[2]);
 			int degrees = (int) (45 * temperature - 10);
 			int precipitation = (int) (400 * moisture);
 			return classify(degrees, precipitation).id;

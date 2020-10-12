@@ -5,10 +5,10 @@ import me.alexng.untitled.generate.Sampler;
 
 public class GenerationPipeline {
 
-	private final Pipe landmassPipe = new Pipe(new LandmassPipeWorker(), true);
+	private final Pipe landmassPipe = new Pipe(new LandmassPipeWorker(), false);
 	private final Pipe heightPipe = new Pipe(new HeightPipeWorker(), true);
 	private final Pipe temperaturePipe = new Pipe(new TemperaturePipeWorker(), true);
-	private final Pipe moisturePipe = new Pipe(new MoisturePipeWorker(), true);
+	private final Pipe moisturePipe = new Pipe(new MoisturePipeWorker(), false);
 	private final Pipe biomePipe = new Pipe(new BiomePipeWorker(), true);
 
 	public void setup(int seed, Sampler sampler) {

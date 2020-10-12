@@ -14,7 +14,8 @@ public class TemperaturePipeWorker implements PipeWorker {
 
 	// (0, 1). Percent of output that is noise before height pass.
 	public static final float NOISE_STRENGTH = 0.2f;
-	public static final float HEIGHT_POWER = 2;
+	public static final float HEIGHT_POWER = 1.8f;
+	public static final float HEIGHT_EXPONENT = 1.35f;
 
 	private HashMap<Integer, Float> gradientCache;
 	private FastNoiseLite noise;
@@ -33,7 +34,7 @@ public class TemperaturePipeWorker implements PipeWorker {
 		float sample = noise.GetNoise(point.getX(), point.getY()); // (-1, 1)
 		float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // (-1, 1)
 		float height = Math.max(0, data[0]); // (0, 1)
-		float scaledHeight = (float) Math.pow(height, HEIGHT_POWER); // (0, 1)
+		float scaledHeight = (float) Math.pow(height, HEIGHT_POWER) * HEIGHT_EXPONENT; // (0, 1)
 		return NoiseHelper.clamp(tempWithNoise - scaledHeight - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
 	}
 

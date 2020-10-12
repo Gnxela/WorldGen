@@ -35,7 +35,7 @@ public class ColorMaps {
 	public static final ColorMap BIOME_MAP = biomeIdFloat -> {
 		int biomeId = (int) biomeIdFloat;
 		if (biomeId == Biome.OCEAN.getId()) {
-			return new Vector3f();
+			return new Vector3f(10, 20, 130);
 		}
 		return Biome.getBiomeFromId(biomeId).getColor();
 	};
