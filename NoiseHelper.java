@@ -57,7 +57,7 @@ public class NoiseHelper {
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
 		noise.SetSeed(seed);
-		noise.SetFrequency(0.0013f);
+		noise.SetFrequency(0.0009f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
 		noise.SetFractalOctaves(4);
