@@ -84,6 +84,28 @@ public class NoiseHelper {
 		return noise;
 	}
 
+	public static FastNoiseLite getMountainNoise(int seed) {
+		FastNoiseLite noise = new FastNoiseLite();
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
+		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
+		noise.SetSeed(seed);
+		noise.SetFrequency(0.003f);
+
+		noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+		noise.SetFractalOctaves(2);
+		noise.SetFractalLacunarity(2f);
+		noise.SetFractalGain(0.5f);
+		noise.SetFractalWeightedStrength(1f);
+		noise.SetFractalPingPongStrength(0);
+
+		noise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Euclidean);
+		noise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance);
+
+		noise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2Reduced);
+		noise.SetDomainWarpAmp(40);
+		return noise;
+	}
+
 	/**
 	 * @param value Large value. Not (0, 1) or (-1. 1). Something like (0, 255)
 	 * @return
@@ -92,6 +114,9 @@ public class NoiseHelper {
 		return (int) (value / step) * step;
 	}
 
+	/**
+	 * Clamps a value to the range [-1, 1].
+	 */
 	public static float clamp(float value) {
 		return Math.max(-1, Math.min(1, value));
 	}
@@ -102,5 +127,12 @@ public class NoiseHelper {
 
 	public static int getSeed() {
 		return (int) System.currentTimeMillis() % 5177351;
+	}
+
+	/**
+	 * Stretches [0, 1] to [-1, 1].
+	 */
+	public static float stretch(float value) {
+		return clamp(value * 2 - 1);
 	}
 }

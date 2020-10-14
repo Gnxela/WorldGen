@@ -48,11 +48,11 @@ public class MapData {
 		return y * getWidth() + x;
 	}
 
-	float getData(int i) {
+	public float getData(int i) {
 		return data[i];
 	}
 
-	float getData(int x, int y) {
+	public float getData(int x, int y) {
 		return getData(getIndex(x, y));
 	}
 
