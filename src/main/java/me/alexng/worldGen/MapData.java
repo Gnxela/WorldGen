@@ -22,6 +22,10 @@ public class MapData {
 		return y * getWidth() + x;
 	}
 
+	public float[] getRawData() {
+		return data;
+	}
+
 	public float getData(int i) {
 		return data[i];
 	}
