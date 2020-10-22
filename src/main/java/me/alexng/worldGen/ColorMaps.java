@@ -46,16 +46,12 @@ public class ColorMaps {
 		 */
 		Vector3f toColor(float value);
 
-		default int[] mapData(float[] rawData) {
+		default int[] packToPixels(float[] rawData) {
 			int[] array = new int[rawData.length];
 			for (int i = 0; i < rawData.length; i++) {
 				Vector3f color = toColor(rawData[i]);
-				int r = (int) color.x;
-				int g = (int) color.y;
-				int b = (int) color.z;
 				// TODO: Why are we returning floats from toColor()?
-				int rgb = (255 << 24) | (r << 16) | (g << 8) | b;
-				array[i] = rgb;
+				array[i] = (255 << 24) | ((int) color.x << 16) | ((int) color.y << 8) | (int) color.z;
 			}
 			return array;
 		}

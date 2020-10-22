@@ -24,7 +24,7 @@ public class Main {
 	private static void writeMapDataToJpg(MapData mapData, ColorMaps.ColorMap colorMap, String outputPath) throws IOException {
 		int width = mapData.getWidth();
 		int height = mapData.getHeight();
-		MemoryImageSource mis = new MemoryImageSource(width, height, colorMap.mapData(mapData.getRawData()), 0, width);
+		MemoryImageSource mis = new MemoryImageSource(width, height, colorMap.packToPixels(mapData.getRawData()), 0, width);
 		Image im = Toolkit.getDefaultToolkit().createImage(mis);
 
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
