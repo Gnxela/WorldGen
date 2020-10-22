@@ -1,4 +1,4 @@
-package me.alexng.untitled.generate;// MIT License
+package me.alexng.worldGen;// MIT License
 //
 // Copyright(c) 2020 Jordan Peck (jordan.me2@gmail.com)
 // Copyright(c) 2020 Contributors

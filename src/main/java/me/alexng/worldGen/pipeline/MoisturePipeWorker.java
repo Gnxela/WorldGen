@@ -1,9 +1,9 @@
-package me.alexng.untitled.generate.pipeline;
+package me.alexng.worldGen.pipeline;
 
-import me.alexng.untitled.generate.FastNoiseLite;
-import me.alexng.untitled.generate.NoiseHelper;
-import me.alexng.untitled.generate.Point;
-import me.alexng.untitled.generate.Sampler;
+import me.alexng.worldGen.FastNoiseLite;
+import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.Point;
+import me.alexng.worldGen.Sampler;
 
 /**
  * A map that outputs moisture in the range (-1, 1). Where -1 is dry and 1 is wet.

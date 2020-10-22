@@ -1,4 +1,4 @@
-package me.alexng.untitled.generate;
+package me.alexng.worldGen;
 
 import org.joml.Vector3f;
 

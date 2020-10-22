@@ -1,8 +1,8 @@
-package me.alexng.untitled.generate.pipeline;
+package me.alexng.worldGen.pipeline;
 
-import me.alexng.untitled.generate.NoiseHelper;
-import me.alexng.untitled.generate.Point;
-import me.alexng.untitled.generate.Sampler;
+import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.Point;
+import me.alexng.worldGen.Sampler;
 import org.joml.Vector3f;
 
 import java.util.Map;

@@ -1,10 +1,4 @@
-package me.alexng.untitled.generate;
-
-import me.alexng.untitled.render.Texture;
-import org.joml.Vector3f;
-import org.lwjgl.system.MemoryUtil;
-
-import java.nio.ByteBuffer;
+package me.alexng.worldGen;
 
 public class MapData {
 
@@ -14,26 +8,6 @@ public class MapData {
 	public MapData(Sampler sampler) {
 		this.sampler = sampler;
 		this.data = new float[getSize()];
-	}
-
-	public Texture toTextureRGB(Texture texture, ColorMaps.ColorMap colorMap) {
-		final int PIXEL_WIDTH = 3;
-		ByteBuffer buffer = MemoryUtil.memAlloc(getSize() * PIXEL_WIDTH);
-		for (int i = 0; i < getSize(); i++) {
-			Vector3f color = colorMap.toColor(getData(i));
-			buffer.put((byte) color.x);
-			buffer.put((byte) color.y);
-			buffer.put((byte) color.z);
-		}
-		buffer.flip();
-		texture.load(getWidth(), getHeight(), buffer);
-		buffer.clear();
-		MemoryUtil.memFree(buffer);
-		return texture;
-	}
-
-	public Texture toTextureRGB(Texture.Type type, ColorMaps.ColorMap colorMap) {
-		return toTextureRGB(new Texture(type), colorMap);
 	}
 
 	public void setData(float value, Point point) {

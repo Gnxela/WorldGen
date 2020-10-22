@@ -1,6 +1,6 @@
-package me.alexng.untitled.generate;
+package me.alexng.worldGen;
 
-import me.alexng.untitled.generate.pipeline.GenerationPipeline;
+import me.alexng.worldGen.pipeline.GenerationPipeline;
 
 import java.util.Iterator;
 

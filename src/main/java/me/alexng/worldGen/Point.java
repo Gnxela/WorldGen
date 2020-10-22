@@ -1,4 +1,4 @@
-package me.alexng.untitled.generate;
+package me.alexng.worldGen;
 
 public class Point {
 	// X and y are the real 'world' points, index x and y are index positions.
