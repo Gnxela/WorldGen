@@ -89,7 +89,7 @@ public class NoiseHelper {
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
 		noise.SetSeed(seed);
-		noise.SetFrequency(0.0004f);
+		noise.SetFrequency(0.0008f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
 		noise.SetFractalOctaves(4);
@@ -105,7 +105,7 @@ public class NoiseHelper {
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
 		noise.SetSeed(seed);
-		noise.SetFrequency(0.006f);
+		noise.SetFrequency(0.003f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
 		noise.SetFractalOctaves(2);

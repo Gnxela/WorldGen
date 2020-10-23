@@ -8,11 +8,11 @@ import me.alexng.worldGen.Sampler;
 public class MountainPipeWorker implements PipeWorker {
 
 	private static final float MOUNTAIN_NOISE_AMP = 0.57f;
-	private static final float MOUNTAIN_FILTER_START = 0.7f;
-	private static final float MOUNTAIN_FILTER_WIDTH = 0.1f;
+	private static final float MOUNTAIN_FILTER_START = 0.6f;
+	private static final float MOUNTAIN_FILTER_WIDTH = 0.2f;
 	private static final float MOUNTAIN_FILTER_END = MOUNTAIN_FILTER_START + MOUNTAIN_FILTER_WIDTH;
 
-	private FastNoiseLite mountainNoise, mountainFilterNoise;
+	private FastNoiseLite mountainNoise, mountainNoise2, mountainFilterNoise;
 
 	@Override
 	public void setup(int seed, Sampler sampler) {
@@ -26,12 +26,12 @@ public class MountainPipeWorker implements PipeWorker {
 		float sampleNormalized = NoiseHelper.normalize(mountainNoise.GetNoise(point.getX(), point.getY())); // [0, 1]
 		float filterSampleNormalized = NoiseHelper.normalize(mountainFilterNoise.GetNoise(point.getX(), point.getY())); // [0, 1]
 		if (filterSampleNormalized > MOUNTAIN_FILTER_END) {
-			filterSampleNormalized = 1 * landmassNormalized;
+			filterSampleNormalized = 1;
 		} else if (filterSampleNormalized < MOUNTAIN_FILTER_START) {
 			filterSampleNormalized = 0;
 		} else {
-			filterSampleNormalized = (filterSampleNormalized - MOUNTAIN_FILTER_START) / MOUNTAIN_FILTER_WIDTH * landmassNormalized;
+			filterSampleNormalized = (filterSampleNormalized - MOUNTAIN_FILTER_START) / MOUNTAIN_FILTER_WIDTH ;
 		}
-		return NoiseHelper.stretch(((float) Math.pow(Math.E, sampleNormalized) - 1) * MOUNTAIN_NOISE_AMP * filterSampleNormalized); // [-1, 1]
+		return NoiseHelper.stretch(((float) Math.pow(Math.E, sampleNormalized) - 1) * MOUNTAIN_NOISE_AMP * filterSampleNormalized * landmassNormalized); // [-1, 1]
 	}
 }
