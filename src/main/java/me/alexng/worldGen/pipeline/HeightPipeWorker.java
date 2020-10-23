@@ -10,6 +10,8 @@ import me.alexng.worldGen.Sampler;
  */
 public class HeightPipeWorker implements PipeWorker {
 
+	private static final float MOUNTAIN_WEIGHT = 0.5f;
+
 	private FastNoiseLite landNoise, oceanNoise;
 
 	@Override
@@ -45,6 +47,6 @@ public class HeightPipeWorker implements PipeWorker {
 	 */
 	private float getLandHeight(Point point, float mountainNormalized) {
 		float sampleNormalized = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
-		return sampleNormalized * 0.5f + mountainNormalized * 0.5f;
+		return sampleNormalized * (1 - MOUNTAIN_WEIGHT) + mountainNormalized * MOUNTAIN_WEIGHT;
 	}
 }
