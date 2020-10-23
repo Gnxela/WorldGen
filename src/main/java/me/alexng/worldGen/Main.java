@@ -12,13 +12,17 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		CombinedMap worldMap = new CombinedMap(new Sampler(10000, 10000));
 		CombinedMap sampledWorldMap = worldMap.sample(1000, 1000);
+		long generationStart = System.nanoTime();
 		sampledWorldMap.generate(0);
+		System.out.println("Generation: " + (System.nanoTime() - generationStart) / 1000000000f + "s");
+		long writingStart = System.nanoTime();
 		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getLandmassPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/landmass.png");
 		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getMountainPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/mountain.png");
 		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getHeightPipe().getStoredData(), ColorMaps.HEIGHT_MAP, "maps/height.png");
 		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getMoisturePipe().getStoredData(), ColorMaps.MOISTURE_MAP, "maps/moisture.png");
 		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getTemperaturePipe().getStoredData(), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
 		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getBiomePipe().getStoredData(), ColorMaps.BIOME_MAP, "maps/biome.png");
+		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}
 
 	private static void writeMapDataToPng(MapData mapData, ColorMaps.ColorMap colorMap, String outputPath) throws IOException {
