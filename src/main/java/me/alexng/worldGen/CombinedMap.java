@@ -1,6 +1,8 @@
 package me.alexng.worldGen;
 
 import me.alexng.worldGen.pipeline.GenerationPipeline;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 import java.util.Iterator;
 

@@ -34,21 +34,21 @@ public class Sampler {
 		return new Iterator<Point>() {
 
 			private final float sampleDistanceX = width / (float) numPointsX, sampleDistanceY = height / (float) numPointsY;
-			private int indexX = 0, indexY = 0;
+			private int sampleX = 0, sampleY = 0, index = 0;
 
 			@Override
 			public boolean hasNext() {
-				return indexX < numPointsX && indexY < numPointsY;
+				return index < getSize();
 			}
 
 			@Override
 			public Point next() {
-				Point nextPoint = new Point((int) (x + indexX * sampleDistanceX), (int) (y + indexY * sampleDistanceY), indexX, indexY);
-				if (++indexX >= numPointsX) {
-					indexY++;
-					indexX = 0;
+				Point point = new PlanePoint((int) (x + sampleX * sampleDistanceX), (int) (y + sampleY * sampleDistanceY), index++);
+				if (++sampleX >= numPointsX) {
+					sampleY++;
+					sampleX = 0;
 				}
-				return nextPoint;
+				return point;
 			}
 		};
 	}
@@ -105,6 +105,7 @@ public class Sampler {
 	/**
 	 * Returns the number of points that will be sampled by this Sampler.
 	 */
+	@Override
 	public int getSize() {
 		return numPointsX * numPointsY;
 	}

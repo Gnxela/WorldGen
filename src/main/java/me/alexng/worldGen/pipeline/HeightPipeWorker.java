@@ -2,8 +2,8 @@ package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 /**
  * A map that outputs the base height. 0 is sea level. (-1, 0) is water, [0, 1) is land

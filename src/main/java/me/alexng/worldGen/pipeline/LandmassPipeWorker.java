@@ -2,8 +2,8 @@ package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 /**
  * A map that outputs -1 for water, 1 for land and [-1, 1] in between (the 'shore').

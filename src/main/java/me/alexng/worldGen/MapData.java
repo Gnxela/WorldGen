@@ -1,5 +1,7 @@
 package me.alexng.worldGen;
 
+import me.alexng.worldGen.sampler.Point;
+
 public class MapData {
 
 	private final float[] data;
