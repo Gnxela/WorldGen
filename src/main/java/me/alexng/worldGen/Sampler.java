@@ -43,7 +43,7 @@ public class Sampler {
 
 			@Override
 			public Point next() {
-				Point nextPoint = new Point((int) (x + indexX * sampleDistanceX), (int) (x + indexY * sampleDistanceY), indexX, indexY);
+				Point nextPoint = new Point((int) (x + indexX * sampleDistanceX), (int) (y + indexY * sampleDistanceY), indexX, indexY);
 				if (++indexX >= numPointsX) {
 					indexY++;
 					indexX = 0;
