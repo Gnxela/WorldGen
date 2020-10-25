@@ -1,15 +1,17 @@
 package me.alexng.worldGen;
 
 import me.alexng.worldGen.pipeline.GenerationPipeline;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 import java.util.Iterator;
 
-public class CombinedMap {
+public class CombinedMap<T extends Sampler> {
 
-	private final Sampler sampler;
+	private final T sampler;
 	private final GenerationPipeline generationPipeline;
 
-	public CombinedMap(Sampler sampler) {
+	public CombinedMap(T sampler) {
 		this.sampler = sampler;
 		this.generationPipeline = new GenerationPipeline();
 	}
@@ -22,31 +24,11 @@ public class CombinedMap {
 		}
 	}
 
-	public CombinedMap sample(int x, int y, int width, int height, int numPointsX, int numPointsY) {
-		return new CombinedMap(new Sampler(x, y, width, height, numPointsX, numPointsY, getSampler().getTotalWidth(), getSampler().getTotalHeight()));
-	}
-
-	public CombinedMap sample(int x, int y, int width, int height) {
-		return new CombinedMap(new Sampler(x, y, width, height, width, height, getSampler().getTotalWidth(), getSampler().getTotalHeight()));
-	}
-
-	public CombinedMap sample(int numPointsX, int numPointsY) {
-		return new CombinedMap(new Sampler(0, 0, getWidth(), getHeight(), numPointsX, numPointsY, getSampler().getTotalWidth(), getSampler().getTotalHeight()));
-	}
-
 	public GenerationPipeline getGenerationPipeline() {
 		return generationPipeline;
 	}
 
-	public Sampler getSampler() {
+	public T getSampler() {
 		return sampler;
-	}
-
-	public int getWidth() {
-		return sampler.getNumPointsX();
-	}
-
-	public int getHeight() {
-		return sampler.getNumPointsY();
 	}
 }

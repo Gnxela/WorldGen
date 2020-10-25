@@ -2,8 +2,8 @@ package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 /**
  * A map that outputs -1 for water, 1 for land and [-1, 1] in between (the 'shore').
@@ -24,7 +24,7 @@ public class LandmassPipeWorker implements PipeWorker {
 
 	@Override
 	public float process(Point point, float... data) {
-		float height = noise.GetNoise(point.getX(), point.getY());
+		float height = point.sample(noise);
 		if (height > SHORE_END) {
 			return 1;
 		} else if (height < SHORE_START) {

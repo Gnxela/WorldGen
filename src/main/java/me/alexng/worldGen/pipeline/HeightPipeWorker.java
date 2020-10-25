@@ -2,8 +2,8 @@ package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 /**
  * A map that outputs the base height. 0 is sea level. (-1, 0) is water, [0, 1) is land
@@ -39,14 +39,14 @@ public class HeightPipeWorker implements PipeWorker {
 	 * Returns [0, 1]. 1 being deeper
 	 */
 	private float getOceanDepth(Point point) {
-		return NoiseHelper.normalize(oceanNoise.GetNoise(point.getX(), point.getY()));
+		return NoiseHelper.normalize(point.sample(oceanNoise));
 	}
 
 	/**
 	 * Returns [0, 1], 1 being higher.
 	 */
 	private float getLandHeight(Point point, float mountainNormalized) {
-		float sampleNormalized = NoiseHelper.normalize(landNoise.GetNoise(point.getX(), point.getY()));
+		float sampleNormalized = NoiseHelper.normalize(point.sample(landNoise));
 		return sampleNormalized * (1 - MOUNTAIN_WEIGHT) + mountainNormalized * MOUNTAIN_WEIGHT;
 	}
 }

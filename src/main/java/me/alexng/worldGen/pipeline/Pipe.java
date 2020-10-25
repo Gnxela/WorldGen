@@ -1,8 +1,8 @@
 package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.MapData;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 public class Pipe {
 
@@ -18,7 +18,7 @@ public class Pipe {
 
 	public void setup(int seed, Sampler sampler) {
 		if (stored) {
-			storedData = new MapData(sampler);
+			storedData = new MapData(sampler.getSize());
 		}
 		pipeWorker.setup(seed, sampler);
 	}

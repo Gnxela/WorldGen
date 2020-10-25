@@ -1,5 +1,8 @@
 package me.alexng.worldGen;
 
+import me.alexng.worldGen.sampler.PlaneSampler;
+import me.alexng.worldGen.sampler.Sampler;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,24 +13,24 @@ import java.io.IOException;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		CombinedMap worldMap = new CombinedMap(new Sampler(10000, 10000));
-		CombinedMap sampledWorldMap = worldMap.sample(1000, 1000);
+		CombinedMap<PlaneSampler> worldMap = new CombinedMap<>(new PlaneSampler(10000, 10000));
+		CombinedMap<PlaneSampler> sampledWorldMap = new CombinedMap<>(worldMap.getSampler().sample(1000, 1000));
 		long generationStart = System.nanoTime();
 		sampledWorldMap.generate(0);
 		System.out.println("Generation: " + (System.nanoTime() - generationStart) / 1000000000f + "s");
+		int width = sampledWorldMap.getSampler().getNumPointsX();
+		int height = sampledWorldMap.getSampler().getNumPointsX();
 		long writingStart = System.nanoTime();
-		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getLandmassPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/landmass.png");
-		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getMountainPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/mountain.png");
-		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getHeightPipe().getStoredData(), ColorMaps.HEIGHT_MAP, "maps/height.png");
-		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getMoisturePipe().getStoredData(), ColorMaps.MOISTURE_MAP, "maps/moisture.png");
-		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getTemperaturePipe().getStoredData(), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
-		writeMapDataToPng(sampledWorldMap.getGenerationPipeline().getBiomePipe().getStoredData(), ColorMaps.BIOME_MAP, "maps/biome.png");
+		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getLandmassPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/landmass.png");
+		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getMountainPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/mountain.png");
+		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getHeightPipe().getStoredData(), ColorMaps.HEIGHT_MAP, "maps/height.png");
+		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getMoisturePipe().getStoredData(), ColorMaps.MOISTURE_MAP, "maps/moisture.png");
+		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getTemperaturePipe().getStoredData(), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
+		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getBiomePipe().getStoredData(), ColorMaps.BIOME_MAP, "maps/biome.png");
 		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}
 
-	private static void writeMapDataToPng(MapData mapData, ColorMaps.ColorMap colorMap, String outputPath) throws IOException {
-		int width = mapData.getWidth();
-		int height = mapData.getHeight();
+	private static void writeMapDataToPng(int width, int height, MapData mapData, ColorMaps.ColorMap colorMap, String outputPath) throws IOException {
 		MemoryImageSource imageSource = new MemoryImageSource(width, height, colorMap.packToPixels(mapData.getRawData()), 0, width);
 		Image image = Toolkit.getDefaultToolkit().createImage(imageSource);
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);

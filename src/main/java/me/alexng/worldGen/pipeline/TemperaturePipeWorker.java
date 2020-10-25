@@ -2,8 +2,10 @@ package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.PlanePoint;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.PlaneSampler;
+import me.alexng.worldGen.sampler.Sampler;
 
 import java.util.HashMap;
 
@@ -25,17 +27,32 @@ public class TemperaturePipeWorker implements PipeWorker {
 	public void setup(int seed, Sampler sampler) {
 		gradientCache = new HashMap<>();
 		noise = NoiseHelper.getTemperatureNoise(seed);
-		totalHeight = sampler.getTotalHeight();
+		totalHeight = getTotalHeight(sampler);
 	}
 
 	@Override
 	public float process(Point point, float... data) {
-		float latitudeTemp = gradientCache.computeIfAbsent(point.getY(), k -> calculateHeatGradient(point.getY())); // (-1, 1)
-		float sample = noise.GetNoise(point.getX(), point.getY()); // (-1, 1)
+		int y = getY(point);
+		float latitudeTemp = gradientCache.computeIfAbsent(y, k -> calculateHeatGradient(y)); // (-1, 1)
+		float sample = point.sample(noise); // (-1, 1)
 		float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // (-1, 1)
 		float height = Math.max(0, data[0]); // (0, 1)
 		float scaledHeight = (float) Math.pow(height, HEIGHT_POWER) * HEIGHT_EXPONENT; // (0, 1)
 		return NoiseHelper.clamp(tempWithNoise - scaledHeight - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
+	}
+
+	private float getTotalHeight(Sampler sampler) {
+		if (sampler instanceof PlaneSampler) {
+			return ((PlaneSampler) sampler).getTotalHeight();
+		}
+		throw new RuntimeException("Unknown sampler type");
+	}
+
+	private int getY(Point point) {
+		if (point instanceof PlanePoint) {
+			return ((PlanePoint) point).getY();
+		}
+		throw new RuntimeException("Unknown point type");
 	}
 
 	private float calculateHeatGradient(int y) {

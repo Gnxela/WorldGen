@@ -2,8 +2,8 @@ package me.alexng.worldGen.pipeline;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.Point;
-import me.alexng.worldGen.Sampler;
+import me.alexng.worldGen.sampler.Point;
+import me.alexng.worldGen.sampler.Sampler;
 
 public class MountainPipeWorker implements PipeWorker {
 
@@ -23,8 +23,8 @@ public class MountainPipeWorker implements PipeWorker {
 	@Override
 	public float process(Point point, float... data) {
 		float landmassNormalized = NoiseHelper.normalize(data[0]); // [0, 1]
-		float sampleNormalized = NoiseHelper.normalize(mountainNoise.GetNoise(point.getX(), point.getY())); // [0, 1]
-		float filterSampleNormalized = NoiseHelper.normalize(mountainFilterNoise.GetNoise(point.getX(), point.getY())); // [0, 1]
+		float sampleNormalized = NoiseHelper.normalize(point.sample(mountainNoise)); // [0, 1]
+		float filterSampleNormalized = NoiseHelper.normalize(point.sample(mountainFilterNoise)); // [0, 1]
 		if (filterSampleNormalized > MOUNTAIN_FILTER_END) {
 			filterSampleNormalized = 1;
 		} else if (filterSampleNormalized < MOUNTAIN_FILTER_START) {
