@@ -2,6 +2,9 @@ package me.alexng.worldGen.sampler;
 
 import java.util.Iterator;
 
+/**
+ * A class that samples points from a field. All coordinates are positive (subject to change).
+ */
 public class PlaneSampler implements Sampler {
 
 	private final int x, y, width, height, numPointsX, numPointsY, totalWidth, totalHeight;
@@ -33,7 +36,6 @@ public class PlaneSampler implements Sampler {
 		return new PlaneSampler(0, 0, getWidth(), getHeight(), numPointsX, numPointsY, getTotalWidth(), getTotalHeight());
 	}
 
-	@Override
 	public Iterator<Point> getPoints() {
 		return new Iterator<Point>() {
 
