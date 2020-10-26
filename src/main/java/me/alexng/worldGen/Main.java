@@ -1,7 +1,6 @@
 package me.alexng.worldGen;
 
 import me.alexng.worldGen.sampler.PlaneSampler;
-import me.alexng.worldGen.sampler.Sampler;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,8 +12,8 @@ import java.io.IOException;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
-		CombinedMap<PlaneSampler> worldMap = new CombinedMap<>(new PlaneSampler(10000, 10000));
-		CombinedMap<PlaneSampler> sampledWorldMap = new CombinedMap<>(worldMap.getSampler().sample(1000, 1000));
+		WorldMap<PlaneSampler> worldMap = new WorldMap<>(new PlaneSampler(10000, 10000));
+		WorldMap<PlaneSampler> sampledWorldMap = new WorldMap<>(worldMap.getSampler().sample(1000, 1000));
 		long generationStart = System.nanoTime();
 		sampledWorldMap.generate(0);
 		System.out.println("Generation: " + (System.nanoTime() - generationStart) / 1000000000f + "s");

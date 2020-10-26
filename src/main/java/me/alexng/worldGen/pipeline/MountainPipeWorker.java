@@ -12,7 +12,7 @@ public class MountainPipeWorker implements PipeWorker {
 	private static final float MOUNTAIN_FILTER_WIDTH = 0.2f;
 	private static final float MOUNTAIN_FILTER_END = MOUNTAIN_FILTER_START + MOUNTAIN_FILTER_WIDTH;
 
-	private FastNoiseLite mountainNoise, mountainNoise2, mountainFilterNoise;
+	private FastNoiseLite mountainNoise, mountainFilterNoise;
 
 	@Override
 	public void setup(int seed, Sampler sampler) {

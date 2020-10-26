@@ -6,12 +6,15 @@ import me.alexng.worldGen.sampler.Sampler;
 
 import java.util.Iterator;
 
-public class CombinedMap<T extends Sampler> {
+/**
+ * @param <T> The type of sampler that is used in this class. Determines how our 3d noise is sampled.
+ */
+public class WorldMap<T extends Sampler> {
 
 	private final T sampler;
 	private final GenerationPipeline generationPipeline;
 
-	public CombinedMap(T sampler) {
+	public WorldMap(T sampler) {
 		this.sampler = sampler;
 		this.generationPipeline = new GenerationPipeline();
 	}

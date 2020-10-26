@@ -10,11 +10,11 @@ import me.alexng.worldGen.sampler.Sampler;
 import java.util.HashMap;
 
 /**
- * A map that outputs temperature in the range (-1, 1). -1 being colder than 1.
+ * A map that outputs temperature in the range [-1, 1]. -1 being colder than 1.
  */
 public class TemperaturePipeWorker implements PipeWorker {
 
-	// (0, 1). Percent of output that is noise before height pass.
+	// [0, 1]. Percent of output that is noise before height pass.
 	public static final float NOISE_STRENGTH = 0.2f;
 	public static final float HEIGHT_POWER = 1.8f;
 	public static final float HEIGHT_EXPONENT = 1.35f;
@@ -33,11 +33,11 @@ public class TemperaturePipeWorker implements PipeWorker {
 	@Override
 	public float process(Point point, float... data) {
 		int y = getY(point);
-		float latitudeTemp = gradientCache.computeIfAbsent(y, k -> calculateHeatGradient(y)); // (-1, 1)
-		float sample = point.sample(noise); // (-1, 1)
-		float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // (-1, 1)
-		float height = Math.max(0, data[0]); // (0, 1)
-		float scaledHeight = (float) Math.pow(height, HEIGHT_POWER) * HEIGHT_EXPONENT; // (0, 1)
+		float latitudeTemp = gradientCache.computeIfAbsent(y, k -> calculateHeatGradient(y)); // [-1, 1]
+		float sample = point.sample(noise); // [-1, 1]
+		float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // [-1, 1]
+		float height = Math.max(0, data[0]); // [0, 1]
+		float scaledHeight = (float) Math.pow(height, HEIGHT_POWER) * HEIGHT_EXPONENT; // [0, 1]
 		return NoiseHelper.clamp(tempWithNoise - scaledHeight - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
 	}
 
@@ -68,7 +68,6 @@ public class TemperaturePipeWorker implements PipeWorker {
 			temp = 0;
 		}
 		temp = (float) Math.pow(temp, 1.1);
-		// Changing from (0, 1) to (-1, 1)
-		return temp * 2 - 1;
+		return NoiseHelper.stretch(temp);
 	}
 }

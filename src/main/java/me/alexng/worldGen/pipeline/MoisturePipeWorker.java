@@ -6,7 +6,7 @@ import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
 /**
- * A map that outputs moisture in the range (-1, 1). Where -1 is dry and 1 is wet.
+ * A map that outputs moisture in the range [-1, 1]. Where -1 is dry and 1 is wet.
  */
 public class MoisturePipeWorker implements PipeWorker {
 

@@ -2,8 +2,6 @@ package me.alexng.worldGen;
 
 public class NoiseHelper {
 
-	// TODO: If we only need one instance of a particular noise setup, then make these variables.
-
 	public static FastNoiseLite getLandmassNoise(int seed) {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
@@ -123,8 +121,7 @@ public class NoiseHelper {
 	}
 
 	/**
-	 * @param value Large value. Not (0, 1) or (-1. 1). Something like (0, 255)
-	 * @return
+	 * @param value Large value. Not [0, 1] or [-1. 1]. Something like [0, 255]
 	 */
 	public static float step(float value, int step) {
 		return (int) (value / step) * step;
@@ -137,12 +134,11 @@ public class NoiseHelper {
 		return Math.max(-1, Math.min(1, value));
 	}
 
+	/**
+	 * Normalizes a value from the range [-1, 1] to [0, 1]
+	 */
 	public static float normalize(float data) {
 		return (data + 1) / 2f;
-	}
-
-	public static int getSeed() {
-		return (int) System.currentTimeMillis() % 5177351;
 	}
 
 	/**
@@ -150,5 +146,9 @@ public class NoiseHelper {
 	 */
 	public static float stretch(float value) {
 		return clamp(value * 2 - 1);
+	}
+
+	public static int getSeed() {
+		return (int) System.currentTimeMillis() % 5177351;
 	}
 }

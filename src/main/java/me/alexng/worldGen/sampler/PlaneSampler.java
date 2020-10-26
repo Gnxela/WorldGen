@@ -3,7 +3,7 @@ package me.alexng.worldGen.sampler;
 import java.util.Iterator;
 
 /**
- * A class that samples points from a field. All coordinates are positive (subject to change).
+ * A class that samples points from a plane. All coordinates are positive (subject to change).
  */
 public class PlaneSampler implements Sampler {
 

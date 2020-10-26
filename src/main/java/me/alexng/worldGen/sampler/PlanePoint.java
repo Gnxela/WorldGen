@@ -4,8 +4,7 @@ import me.alexng.worldGen.FastNoiseLite;
 
 public class PlanePoint implements Point {
 
-	// X and y are the real 'world' points, index x and y are index positions.
-	private int x, y, index;
+	private final int x, y, index;
 
 	public PlanePoint(int x, int y, int index) {
 		this.x = x;

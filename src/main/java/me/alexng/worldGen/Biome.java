@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * An enum that contains biome types used in the Whittaker biome classification.
+ */
 public enum Biome {
 	OCEAN(-2, new Vector3f()),
 	UNKNOWN(-1, new Vector3f(204, 0, 204)),

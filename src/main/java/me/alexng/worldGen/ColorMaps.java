@@ -2,6 +2,9 @@ package me.alexng.worldGen;
 
 import org.joml.Vector3f;
 
+/**
+ * A helper class that contains methods that map a particular {@link me.alexng.worldGen.pipeline.Pipe}'s output to color values.
+ */
 public class ColorMaps {
 
 	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(data));
@@ -41,16 +44,21 @@ public class ColorMaps {
 	};
 
 	public interface ColorMap {
+
+		// TODO: Why are we returning floats from toColor()?
 		/**
+		 * Maps a pipes output to a color.
 		 * @param value the value. DO NOT NORMALIZE
 		 */
 		Vector3f toColor(float value);
 
+		/**
+		 * Packs {@link MapData#getRawData()} to ARGB ints.
+		 */
 		default int[] packToPixels(float[] rawData) {
 			int[] array = new int[rawData.length];
 			for (int i = 0; i < rawData.length; i++) {
 				Vector3f color = toColor(rawData[i]);
-				// TODO: Why are we returning floats from toColor()?
 				array[i] = (255 << 24) | ((int) color.x << 16) | ((int) color.y << 8) | (int) color.z;
 			}
 			return array;

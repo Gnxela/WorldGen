@@ -6,7 +6,7 @@ import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
 /**
- * A map that outputs the base height. 0 is sea level. (-1, 0) is water, [0, 1) is land
+ * A map that outputs the base height. 0 is sea level. [-1, 0] is water, (0, 1] is land
  */
 public class HeightPipeWorker implements PipeWorker {
 
