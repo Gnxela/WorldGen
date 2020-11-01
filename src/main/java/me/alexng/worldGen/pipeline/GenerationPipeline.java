@@ -11,6 +11,7 @@ public class GenerationPipeline {
 	private final Pipe moisturePipe = new Pipe(new MoisturePipeWorker(), true);
 	private final Pipe biomePipe = new Pipe(new BiomePipeWorker(), true);
 	private final Pipe mountainPipe = new Pipe(new MountainPipeWorker(), true);
+	private final Pipe precipitationPipe = new Pipe(new PrecipitationPipeWorker(), true);
 
 	public void setup(int seed, Sampler sampler) {
 		landmassPipe.setup(seed, sampler);
@@ -19,6 +20,7 @@ public class GenerationPipeline {
 		moisturePipe.setup(seed, sampler);
 		biomePipe.setup(seed, sampler);
 		mountainPipe.setup(seed, sampler);
+		precipitationPipe.setup(seed, sampler);
 	}
 
 	public void process(Point point) {
@@ -27,6 +29,7 @@ public class GenerationPipeline {
 		float height = heightPipe.process(point, landmass, mountain);
 		float temperature = temperaturePipe.process(point, height);
 		float moisture = moisturePipe.process(point, height);
+		float precipitation = precipitationPipe.process(point, height);
 		biomePipe.process(point, height, temperature, moisture);
 	}
 

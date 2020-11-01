@@ -121,6 +121,13 @@ public class NoiseHelper {
 	}
 
 	/**
+	 * Returns the global wind direction in degrees [0, 360).
+	 */
+	public static int getWindDirection(int seed) {
+		return seed % 360;
+	}
+
+	/**
 	 * @param value Large value. Not [0, 1] or [-1. 1]. Something like [0, 255]
 	 */
 	public static float step(float value, int step) {
