@@ -1,7 +1,9 @@
-package me.alexng.worldGen.pipeline;
+package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.PipeWorker;
+import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
@@ -22,8 +24,8 @@ public class LandmassPipeWorker implements PipeWorker {
 		noise = NoiseHelper.getLandmassNoise(seed);
 	}
 
-	@Override
-	public float process(Point point, float... data) {
+	@Producer(name = "landmass")
+	public float process(Point point) {
 		float height = point.sample(noise);
 		if (height > SHORE_END) {
 			return 1;

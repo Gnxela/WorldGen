@@ -20,12 +20,14 @@ public class Main {
 		int width = sampledWorldMap.getSampler().getNumPointsX();
 		int height = sampledWorldMap.getSampler().getNumPointsX();
 		long writingStart = System.nanoTime();
+		/*
 		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getLandmassPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/landmass.png");
 		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getMountainPipe().getStoredData(), ColorMaps.GREY_SCALE, "maps/mountain.png");
 		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getHeightPipe().getStoredData(), ColorMaps.HEIGHT_MAP, "maps/height.png");
 		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getMoisturePipe().getStoredData(), ColorMaps.MOISTURE_MAP, "maps/moisture.png");
 		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getTemperaturePipe().getStoredData(), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
 		writeMapDataToPng(width, height, sampledWorldMap.getGenerationPipeline().getBiomePipe().getStoredData(), ColorMaps.BIOME_MAP, "maps/biome.png");
+		*/
 		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}
 

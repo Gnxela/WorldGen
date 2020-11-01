@@ -1,7 +1,8 @@
-package me.alexng.worldGen.pipeline;
+package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.Biome;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 import org.joml.Vector3f;
@@ -20,7 +21,6 @@ public class BiomePipeWorker implements PipeWorker {
 	public void setup(int seed, Sampler sampler) {
 	}
 
-	@Override
 	public float process(Point point, float... data) {
 		if (data[0] <= 0) {
 			return Biome.OCEAN.getId();

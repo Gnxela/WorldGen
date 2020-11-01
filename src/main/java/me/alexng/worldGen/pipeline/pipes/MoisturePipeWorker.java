@@ -1,7 +1,8 @@
-package me.alexng.worldGen.pipeline;
+package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
@@ -19,7 +20,6 @@ public class MoisturePipeWorker implements PipeWorker {
 		noise = NoiseHelper.getMoistureNoise(seed);
 	}
 
-	@Override
 	public float process(Point point, float... data) {
 		float sample = point.sample(noise);
 		float height = data[0];

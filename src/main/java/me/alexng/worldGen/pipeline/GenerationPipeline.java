@@ -1,59 +1,118 @@
 package me.alexng.worldGen.pipeline;
 
+import me.alexng.worldGen.pipeline.pipes.*;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.*;
+
 public class GenerationPipeline {
 
-	private final Pipe landmassPipe = new Pipe(new LandmassPipeWorker(), true);
-	private final Pipe heightPipe = new Pipe(new HeightPipeWorker(), true);
-	private final Pipe temperaturePipe = new Pipe(new TemperaturePipeWorker(), true);
-	private final Pipe moisturePipe = new Pipe(new MoisturePipeWorker(), true);
-	private final Pipe biomePipe = new Pipe(new BiomePipeWorker(), true);
-	private final Pipe mountainPipe = new Pipe(new MountainPipeWorker(), true);
-	private final Pipe precipitationPipe = new Pipe(new PrecipitationPipeWorker(), true);
+	private final static PipeWorker[] workers = new PipeWorker[]{
+			new LandmassPipeWorker(),
+			new MountainPipeWorker(),
+			new HeightPipeWorker(),
+			new TemperaturePipeWorker(),
+			new MoisturePipeWorker(),
+			new PrecipitationPipeWorker(),
+			new BiomePipeWorker()
+	};
+
+	private final List<Node> graphOrder = new LinkedList<>();
+
+	public GenerationPipeline() {
+		initialisePipeline();
+	}
 
 	public void setup(int seed, Sampler sampler) {
-		landmassPipe.setup(seed, sampler);
-		heightPipe.setup(seed, sampler);
-		temperaturePipe.setup(seed, sampler);
-		moisturePipe.setup(seed, sampler);
-		biomePipe.setup(seed, sampler);
-		mountainPipe.setup(seed, sampler);
-		precipitationPipe.setup(seed, sampler);
+		for (PipeWorker worker : workers) {
+			worker.setup(seed, sampler);
+		}
 	}
 
-	public void process(Point point) {
-		float landmass = landmassPipe.process(point);
-		float mountain = mountainPipe.process(point, landmass);
-		float height = heightPipe.process(point, landmass, mountain);
-		float temperature = temperaturePipe.process(point, height);
-		float moisture = moisturePipe.process(point, height);
-		float precipitation = precipitationPipe.process(point, height);
-		biomePipe.process(point, height, temperature, moisture);
+	public void generatePoints(Iterator<Point> pointIterator) {
+
 	}
 
-	public Pipe getLandmassPipe() {
-		return landmassPipe;
+	/**
+	 * TODO: Improve / replace this.
+	 * Dirty dependency resolution.
+	 */
+	private void initialisePipeline() {
+		List<Node> nodes = new ArrayList<>();
+		for (PipeWorker worker : workers) {
+			createNodes(nodes, worker);
+		}
+		while (nodes.size() > 0) {
+			int foundIndex = findResolvedNode(nodes);
+			if (foundIndex == -1) {
+				throw new RuntimeException("Unable to resolve dependency graph");
+			}
+			Node resolvedNode = nodes.remove(foundIndex);
+			graphOrder.add(resolvedNode);
+			resolveConsumers(nodes, resolvedNode);
+		}
 	}
 
-	public Pipe getHeightPipe() {
-		return heightPipe;
+	private void createNodes(List<Node> nodes, PipeWorker worker) {
+		Method[] methods = worker.getClass().getDeclaredMethods();
+		for (Method method : methods) {
+			Producer producer = method.getAnnotation(Producer.class);
+			if (producer == null) {
+				continue;
+			}
+			// All parameters must be consumers
+			Parameter[] parameters = method.getParameters();
+			Consumer[] consumers = new Consumer[parameters.length-1];
+			for (int i = 0; i < consumers.length; i++) {
+				Consumer consumer = parameters[i+1].getAnnotation(Consumer.class);
+				if (consumer == null) {
+					throw new RuntimeException("All parameters of a producer must be consumers. " + method.getName() + ":" + parameters[i].getName());
+				}
+				consumers[i] = consumer;
+			}
+			nodes.add(new Node(producer, consumers));
+		}
 	}
 
-	public Pipe getTemperaturePipe() {
-		return temperaturePipe;
+	private void resolveConsumers(List<Node> nodes, Node resolvedNode) {
+		for (Node node : nodes) {
+			node.resolveConsumer(resolvedNode.producer);
+		}
 	}
 
-	public Pipe getMoisturePipe() {
-		return moisturePipe;
+	private int findResolvedNode(List<Node> nodes) {
+		for (int i = 0; i < nodes.size(); i++) {
+			if (nodes.get(i).isAvailable()) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
-	public Pipe getBiomePipe() {
-		return biomePipe;
-	}
+	/**
+	 * A node in the pipeline dependency graph.
+	 */
+	private static class Node {
+		private final Producer producer;
+		private final Consumer[] consumers;
+		private final Set<String> unresolvedConsumers;
 
-	public Pipe getMountainPipe() {
-		return mountainPipe;
+		public Node(Producer producer, Consumer[] consumers) {
+			this.producer = producer;
+			this.consumers = consumers;
+			this.unresolvedConsumers = new HashSet<>();
+			Arrays.stream(consumers).map(Consumer::name).forEach(unresolvedConsumers::add);
+		}
+
+		public void resolveConsumer(Producer producer) {
+			unresolvedConsumers.remove(producer.name());
+		}
+
+		public boolean isAvailable() {
+			return unresolvedConsumers.size() == 0;
+		}
 	}
 }

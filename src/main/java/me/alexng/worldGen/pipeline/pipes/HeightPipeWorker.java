@@ -1,7 +1,10 @@
-package me.alexng.worldGen.pipeline;
+package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.PipeWorker;
+import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
@@ -20,10 +23,10 @@ public class HeightPipeWorker implements PipeWorker {
 		oceanNoise = NoiseHelper.getOceanHeightMapNoise(seed);
 	}
 
-	@Override
-	public float process(Point point, float... data) {
-		float landmassNormalized = NoiseHelper.normalize(data[0]);
-		float mountainNormalized = NoiseHelper.normalize(data[1]);
+	@Producer(name = "height")
+	public float process(Point point, @Consumer(name = "landmass") float landmass, @Consumer(name = "mountain") float mountain) {
+		float landmassNormalized = NoiseHelper.normalize(landmass);
+		float mountainNormalized = NoiseHelper.normalize(mountain);
 		if (landmassNormalized == 0) { // Ocean
 			return -getOceanDepth(point);
 		} else if (landmassNormalized == 1) { // Land
