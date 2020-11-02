@@ -2,7 +2,9 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.Consumer;
 import me.alexng.worldGen.pipeline.PipeWorker;
+import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.PlanePoint;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.PlaneSampler;
@@ -31,13 +33,14 @@ public class TemperaturePipeWorker implements PipeWorker {
 		totalHeight = getTotalHeight(sampler);
 	}
 
-	public float process(Point point, float... data) {
+	@Producer(name = "temperature")
+	public float process(Point point, @Consumer(name = "height") float height) {
 		int y = getY(point);
 		float latitudeTemp = gradientCache.computeIfAbsent(y, k -> calculateHeatGradient(y)); // [-1, 1]
 		float sample = point.sample(noise); // [-1, 1]
 		float tempWithNoise = latitudeTemp * (1 - NOISE_STRENGTH) + sample * NOISE_STRENGTH; // [-1, 1]
-		float height = Math.max(0, data[0]); // [0, 1]
-		float scaledHeight = (float) Math.pow(height, HEIGHT_POWER) * HEIGHT_EXPONENT; // [0, 1]
+		float positiveHeight = Math.max(0, height); // [0, 1]
+		float scaledHeight = (float) Math.pow(positiveHeight, HEIGHT_POWER) * HEIGHT_EXPONENT; // [0, 1]
 		return NoiseHelper.clamp(tempWithNoise - scaledHeight - (NoiseHelper.normalize(tempWithNoise) * scaledHeight * 0.5f));
 	}
 

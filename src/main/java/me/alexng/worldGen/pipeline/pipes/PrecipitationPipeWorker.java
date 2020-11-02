@@ -2,7 +2,9 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.Biome;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.Consumer;
 import me.alexng.worldGen.pipeline.PipeWorker;
+import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
@@ -15,8 +17,8 @@ public class PrecipitationPipeWorker implements PipeWorker {
 	public void setup(int seed, Sampler sampler) {
 	}
 
-	public float process(Point point, float... data) {
-		float height = data[0];
+	@Producer(name = "precipitation")
+	public float process(Point point, @Consumer(name = "height") float height) {
 		if (height > 0) { // Land
 			return 0;
 		}

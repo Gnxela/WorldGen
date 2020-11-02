@@ -2,7 +2,9 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.Biome;
 import me.alexng.worldGen.NoiseHelper;
+import me.alexng.worldGen.pipeline.Consumer;
 import me.alexng.worldGen.pipeline.PipeWorker;
+import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 import org.joml.Vector3f;
@@ -21,14 +23,15 @@ public class BiomePipeWorker implements PipeWorker {
 	public void setup(int seed, Sampler sampler) {
 	}
 
-	public float process(Point point, float... data) {
-		if (data[0] <= 0) {
+	@Producer(name = "biome")
+	public float process(Point point, @Consumer(name = "height") float height, @Consumer(name = "temperature") float temperature, @Consumer(name = "moisture") float moisture) {
+		if (height <= 0) {
 			return Biome.OCEAN.getId();
 		} else {
-			float temperature = NoiseHelper.normalize(data[1]);
-			float moisture = NoiseHelper.normalize(data[2]);
-			int degrees = (int) (45 * temperature - 10);
-			int precipitation = (int) (400 * moisture);
+			float temperatureNormalized = NoiseHelper.normalize(temperature);
+			float moistureNormalized = NoiseHelper.normalize(moisture);
+			int degrees = (int) (45 * temperatureNormalized - 10);
+			int precipitation = (int) (400 * moistureNormalized);
 			return classify(degrees, precipitation).getId();
 		}
 	}
