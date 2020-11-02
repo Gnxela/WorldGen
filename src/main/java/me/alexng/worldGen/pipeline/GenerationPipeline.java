@@ -33,7 +33,9 @@ public class GenerationPipeline {
 	}
 
 	public void generatePoints(Iterator<Point> pointIterator) {
-
+		for (Node node : graphOrder) {
+			System.out.println(node.producer.name());
+		}
 	}
 
 	/**
@@ -63,17 +65,20 @@ public class GenerationPipeline {
 			if (producer == null) {
 				continue;
 			}
-			// All parameters must be consumers
+			// First parameter must be a point, rest must be consumers
 			Parameter[] parameters = method.getParameters();
+			if (!Point.class.isAssignableFrom(parameters[0].getType())) {
+				throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: " + worker.getClass().getSimpleName() + ":" + method.getName() + ":" + parameters[0].getName());
+			}
 			Consumer[] consumers = new Consumer[parameters.length-1];
 			for (int i = 0; i < consumers.length; i++) {
 				Consumer consumer = parameters[i+1].getAnnotation(Consumer.class);
 				if (consumer == null) {
-					throw new RuntimeException("All parameters of a producer must be consumers. " + method.getName() + ":" + parameters[i].getName());
+					throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: " + method.getName() + ":" + parameters[i].getName());
 				}
 				consumers[i] = consumer;
 			}
-			nodes.add(new Node(producer, consumers));
+			nodes.add(new Node(method, producer, consumers));
 		}
 	}
 
@@ -96,11 +101,14 @@ public class GenerationPipeline {
 	 * A node in the pipeline dependency graph.
 	 */
 	private static class Node {
+
+		private final Method method;
 		private final Producer producer;
 		private final Consumer[] consumers;
 		private final Set<String> unresolvedConsumers;
 
-		public Node(Producer producer, Consumer[] consumers) {
+		public Node(Method method, Producer producer, Consumer[] consumers) {
+			this.method = method;
 			this.producer = producer;
 			this.consumers = consumers;
 			this.unresolvedConsumers = new HashSet<>();
