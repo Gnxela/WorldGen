@@ -7,11 +7,6 @@ import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
-import org.joml.Vector3f;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A map that outputs biome type. Data for each cell is the biome ID, see {@link Biome}.
@@ -23,7 +18,7 @@ public class BiomePipeWorker implements PipeWorker {
 	public void setup(int seed, Sampler sampler) {
 	}
 
-	@Producer(name = "biome")
+	@Producer(name = "biome", stored = true)
 	public float process(Point point, @Consumer(name = "height") float height, @Consumer(name = "temperature") float temperature, @Consumer(name = "moisture") float moisture) {
 		if (height <= 0) {
 			return Biome.OCEAN.getId();

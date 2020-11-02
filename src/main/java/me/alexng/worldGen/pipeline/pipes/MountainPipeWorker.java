@@ -33,7 +33,7 @@ public class MountainPipeWorker implements PipeWorker {
 		} else if (filterSampleNormalized < MOUNTAIN_FILTER_START) {
 			filterSampleNormalized = 0;
 		} else {
-			filterSampleNormalized = (filterSampleNormalized - MOUNTAIN_FILTER_START) / MOUNTAIN_FILTER_WIDTH ;
+			filterSampleNormalized = (filterSampleNormalized - MOUNTAIN_FILTER_START) / MOUNTAIN_FILTER_WIDTH;
 		}
 		return NoiseHelper.stretch(((float) Math.pow(Math.E, sampleNormalized) - 1) * MOUNTAIN_NOISE_AMP * filterSampleNormalized * landmassNormalized); // [-1, 1]
 	}

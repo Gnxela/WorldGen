@@ -6,8 +6,8 @@ import me.alexng.worldGen.pipeline.Consumer;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.PlanePoint;
-import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.PlaneSampler;
+import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
 import java.util.HashMap;

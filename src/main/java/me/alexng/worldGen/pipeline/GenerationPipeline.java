@@ -7,6 +7,7 @@ import me.alexng.worldGen.sampler.Sampler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GenerationPipeline {
 
@@ -20,7 +21,7 @@ public class GenerationPipeline {
 			new BiomePipeWorker()
 	};
 
-	private final List<Node> graphOrder = new LinkedList<>();
+	private final List<Node> graphOrder = new ArrayList<>();
 
 	public GenerationPipeline() {
 		initialisePipeline();
@@ -34,7 +35,9 @@ public class GenerationPipeline {
 
 	public void generatePoints(Iterator<Point> pointIterator) {
 		for (Node node : graphOrder) {
-			System.out.println(node.producer.name());
+			String dependencies = Arrays.stream(node.consumers).map(Consumer::name).collect(Collectors.joining(", "));
+			String dependants = node.dependants.stream().map(n -> n.producer.name()).collect(Collectors.joining(", "));
+			System.out.println("[" + dependencies + "] -> " + node.producer.name() + " -> [" + dependants + "]");
 		}
 	}
 
@@ -47,6 +50,7 @@ public class GenerationPipeline {
 		for (PipeWorker worker : workers) {
 			createNodes(nodes, worker);
 		}
+		linkNodes(nodes);
 		while (nodes.size() > 0) {
 			int foundIndex = findResolvedNode(nodes);
 			if (foundIndex == -1) {
@@ -70,9 +74,9 @@ public class GenerationPipeline {
 			if (!Point.class.isAssignableFrom(parameters[0].getType())) {
 				throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: " + worker.getClass().getSimpleName() + ":" + method.getName() + ":" + parameters[0].getName());
 			}
-			Consumer[] consumers = new Consumer[parameters.length-1];
+			Consumer[] consumers = new Consumer[parameters.length - 1];
 			for (int i = 0; i < consumers.length; i++) {
-				Consumer consumer = parameters[i+1].getAnnotation(Consumer.class);
+				Consumer consumer = parameters[i + 1].getAnnotation(Consumer.class);
 				if (consumer == null) {
 					throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: " + method.getName() + ":" + parameters[i].getName());
 				}
@@ -80,6 +84,15 @@ public class GenerationPipeline {
 			}
 			nodes.add(new Node(method, producer, consumers));
 		}
+	}
+
+	private void linkNodes(List<Node> nodes) {
+		Map<String, List<Node>> dependencyMap = new HashMap<>();
+		nodes.forEach(node -> Arrays.stream(node.consumers).forEach(consumer -> {
+			List<Node> dependants = dependencyMap.computeIfAbsent(consumer.name(), (key) -> new LinkedList<>());
+			dependants.add(node);
+		}));
+		nodes.forEach(node -> node.setDependants(dependencyMap.computeIfAbsent(node.producer.name(), (key) -> new LinkedList<>())));
 	}
 
 	private void resolveConsumers(List<Node> nodes, Node resolvedNode) {
@@ -105,7 +118,9 @@ public class GenerationPipeline {
 		private final Method method;
 		private final Producer producer;
 		private final Consumer[] consumers;
+		// TODO: This is only needed during pipeline initialisation
 		private final Set<String> unresolvedConsumers;
+		private List<Node> dependants;
 
 		public Node(Method method, Producer producer, Consumer[] consumers) {
 			this.method = method;
@@ -121,6 +136,10 @@ public class GenerationPipeline {
 
 		public boolean isAvailable() {
 			return unresolvedConsumers.size() == 0;
+		}
+
+		public void setDependants(List<Node> dependants) {
+			this.dependants = dependants;
 		}
 	}
 }
