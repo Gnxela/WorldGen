@@ -37,7 +37,7 @@ public class GenerationPipeline {
 		for (Node node : graphOrder) {
 			String dependencies = Arrays.stream(node.consumers).map(Consumer::name).collect(Collectors.joining(", "));
 			String dependants = node.dependants.stream().map(n -> n.producer.name()).collect(Collectors.joining(", "));
-			System.out.println("[" + dependencies + "] -> " + node.producer.name() + " -> [" + dependants + "]");
+			System.out.println("[" + dependencies + "] -> " + node.producer.name() + ":" + node.storedOrBlockingDependants + " -> [" + dependants + "]");
 		}
 	}
 
@@ -120,6 +120,7 @@ public class GenerationPipeline {
 		private final Consumer[] consumers;
 		// TODO: This is only needed during pipeline initialisation
 		private final Set<String> unresolvedConsumers;
+		private boolean storedOrBlockingDependants;
 		private List<Node> dependants;
 
 		public Node(Method method, Producer producer, Consumer[] consumers) {
@@ -127,6 +128,7 @@ public class GenerationPipeline {
 			this.producer = producer;
 			this.consumers = consumers;
 			this.unresolvedConsumers = new HashSet<>();
+			this.storedOrBlockingDependants = producer.stored();
 			Arrays.stream(consumers).map(Consumer::name).forEach(unresolvedConsumers::add);
 		}
 
@@ -139,6 +141,8 @@ public class GenerationPipeline {
 		}
 
 		public void setDependants(List<Node> dependants) {
+			storedOrBlockingDependants = storedOrBlockingDependants | dependants.stream()
+					.anyMatch(dependant -> Arrays.stream(dependant.consumers).anyMatch(Consumer::blocked));
 			this.dependants = dependants;
 		}
 	}
