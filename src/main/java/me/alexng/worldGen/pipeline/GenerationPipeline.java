@@ -47,18 +47,18 @@ public class GenerationPipeline {
 	 */
 	private void initialisePipeline() {
 		List<Node> nodes = new ArrayList<>();
-		for (PipeWorker worker : workers) {
-			createNodes(nodes, worker);
+		for (PipeWorker worker : workers) { // O(n)
+			createNodes(nodes, worker); // O(1) for a given worker
 		}
-		linkNodes(nodes);
-		while (nodes.size() > 0) {
-			int foundIndex = findResolvedNode(nodes);
+		linkNodes(nodes); // O(2n)
+		while (nodes.size() > 0) { // O(n)
+			int foundIndex = findResolvedNode(nodes); // O(n)
 			if (foundIndex == -1) {
 				throw new RuntimeException("Unable to resolve dependency graph");
 			}
 			Node resolvedNode = nodes.remove(foundIndex);
 			graphOrder.add(resolvedNode);
-			resolveConsumers(nodes, resolvedNode);
+			resolveConsumers(nodes, resolvedNode); // O(n)
 		}
 	}
 
@@ -87,11 +87,17 @@ public class GenerationPipeline {
 	}
 
 	private void linkNodes(List<Node> nodes) {
+		// TODO: These should be a better way to resolve these.
+		Map<String, Node> nodeMap = new HashMap<>();
 		Map<String, List<Node>> dependencyMap = new HashMap<>();
-		nodes.forEach(node -> Arrays.stream(node.consumers).forEach(consumer -> {
-			List<Node> dependants = dependencyMap.computeIfAbsent(consumer.name(), (key) -> new LinkedList<>());
-			dependants.add(node);
-		}));
+		nodes.forEach(node -> {
+			nodeMap.put(node.producer.name(), node);
+			Arrays.stream(node.consumers).forEach(consumer -> {
+				List<Node> dependants = dependencyMap.computeIfAbsent(consumer.name(), (key) -> new LinkedList<>());
+				dependants.add(node);
+			});
+		});
+		nodes.forEach(node -> node.grabDependencies(nodeMap));
 		nodes.forEach(node -> node.setDependants(dependencyMap.computeIfAbsent(node.producer.name(), (key) -> new LinkedList<>())));
 	}
 
@@ -121,6 +127,9 @@ public class GenerationPipeline {
 		// TODO: This is only needed during pipeline initialisation
 		private final Set<String> unresolvedConsumers;
 		private boolean storedOrBlockingDependants;
+		// Nodes that this node depends on.
+		private final List<Node> dependencies = new LinkedList<>();
+		// Nodes that depend on this node.
 		private List<Node> dependants;
 
 		public Node(Method method, Producer producer, Consumer[] consumers) {
@@ -144,6 +153,12 @@ public class GenerationPipeline {
 			storedOrBlockingDependants = storedOrBlockingDependants | dependants.stream()
 					.anyMatch(dependant -> Arrays.stream(dependant.consumers).anyMatch(Consumer::blocked));
 			this.dependants = dependants;
+		}
+
+		public void grabDependencies(Map<String, Node> nodeMap) {
+			for (Consumer consumer : consumers) {
+				dependencies.add(nodeMap.get(consumer.name()));
+			}
 		}
 	}
 }
