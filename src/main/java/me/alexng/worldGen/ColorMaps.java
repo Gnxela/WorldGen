@@ -53,7 +53,7 @@ public class ColorMaps {
 		Vector3f toColor(float value);
 
 		/**
-		 * Packs {@link MapData#getRawData()} to ARGB ints.
+		 * Converts floats to ARGB ints.
 		 */
 		default int[] packToPixels(float[] rawData) {
 			int[] array = new int[rawData.length];

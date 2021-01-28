@@ -16,8 +16,8 @@ public class PrecipitationPipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "precipitation")
-	public float process(Point point, @Consumer(name = "height", blocked = true) float height) {
-		if (height > 0) { // Land
+	public float process(Point point, @Consumer(name = "height", blocked = true) float[] height) {
+		if (height[point.getIndex()] > 0) { // Land
 			return 0;
 		}
 		return 0;
