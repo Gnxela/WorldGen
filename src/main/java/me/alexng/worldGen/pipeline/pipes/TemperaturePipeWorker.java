@@ -2,7 +2,7 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.PlanePoint;
@@ -34,7 +34,7 @@ public class TemperaturePipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "temperature")
-	public float process(Point point, @Consumer(name = "height") float height) {
+	public float process(Point point, @Consume(name = "height") float height) {
 		int y = getY(point);
 		float latitudeTemp = gradientCache.computeIfAbsent(y, k -> calculateHeatGradient(y)); // [-1, 1]
 		float sample = point.sample(noise); // [-1, 1]

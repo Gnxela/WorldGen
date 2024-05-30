@@ -2,7 +2,7 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.Biome;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
@@ -19,7 +19,7 @@ public class BiomePipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "biome", stored = true)
-	public float process(Point point, @Consumer(name = "height") float height, @Consumer(name = "temperature") float temperature, @Consumer(name = "moisture") float moisture) {
+	public float process(Point point, @Consume(name = "height") float height, @Consume(name = "temperature") float temperature, @Consume(name = "moisture") float moisture) {
 		if (height <= 0) {
 			return Biome.OCEAN.getId();
 		} else {

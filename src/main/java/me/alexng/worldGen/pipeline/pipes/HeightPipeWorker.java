@@ -2,7 +2,7 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
@@ -24,7 +24,7 @@ public class HeightPipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "height")
-	public float process(Point point, @Consumer(name = "landmass") float landmass, @Consumer(name = "mountain") float mountain) {
+	public float process(Point point, @Consume(name = "landmass") float landmass, @Consume(name = "mountain") float mountain) {
 		float landmassNormalized = NoiseHelper.normalize(landmass);
 		float mountainNormalized = NoiseHelper.normalize(mountain);
 		if (landmassNormalized == 0) { // Ocean

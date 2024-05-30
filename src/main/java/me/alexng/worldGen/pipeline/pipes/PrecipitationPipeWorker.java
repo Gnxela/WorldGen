@@ -1,6 +1,6 @@
 package me.alexng.worldGen.pipeline.pipes;
 
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
@@ -16,7 +16,7 @@ public class PrecipitationPipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "precipitation")
-	public float process(Point point, @Consumer(name = "height", blocked = true) float[] height) {
+	public float process(Point point, @Consume(name = "height", blocked = true) float[] height) {
 		if (height[point.getIndex()] > 0) { // Land
 			return 0;
 		}

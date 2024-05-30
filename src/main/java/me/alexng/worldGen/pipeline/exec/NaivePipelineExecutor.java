@@ -1,6 +1,6 @@
 package me.alexng.worldGen.pipeline.exec;
 
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.Pipeline;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
@@ -44,13 +44,13 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 		Iterator<Point> pointIterator = sampler.getPoints();
 		float[] result = new float[sampler.getSize()];
 		int resultIndex = 0;
-		Object[] parameters = new Object[node.consumers.length + 1];
+		Object[] parameters = new Object[node.consumes.length + 1];
 		while (pointIterator.hasNext()) {
 			Point point = pointIterator.next();
 			parameters[0] = point;
-			for (int i = 0; i < node.consumers.length; i++) {
+			for (int i = 0; i < node.consumes.length; i++) {
 				// TODO: We shouldn't read from the map for every point. But this works for now.
-				Consumer consumer = node.consumers[i];
+				Consume consumer = node.consumes[i];
 				if (consumer.blocked()) {
 					parameters[1 + i] = resultMap.get(consumer.name());
 				} else {

@@ -17,10 +17,10 @@ import java.util.Map;
 public class WorldMap<T extends Sampler> {
 
 	private static final PipeWorker[] workers = new PipeWorker[]{
+		new TemperaturePipeWorker(),
 			new LandmassPipeWorker(),
 			new MountainPipeWorker(),
 			new HeightPipeWorker(),
-			new TemperaturePipeWorker(),
 			new MoisturePipeWorker(),
 			new PrecipitationPipeWorker(),
 			new BiomePipeWorker()
@@ -32,7 +32,9 @@ public class WorldMap<T extends Sampler> {
 
 	public WorldMap(T sampler) {
 		this.sampler = sampler;
+		// TODO: Allow out of order PipeWorkers? Construct DAG automatically.
 		this.generationPipeline = new Pipeline(workers);
+		// pipelineExecutor = new ThreadedPipelineExecutor(10, generationPipeline);
 		pipelineExecutor = new NaivePipelineExecutor(generationPipeline);
 	}
 

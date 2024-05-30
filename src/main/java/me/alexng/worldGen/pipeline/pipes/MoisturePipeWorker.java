@@ -2,7 +2,7 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import me.alexng.worldGen.FastNoiseLite;
 import me.alexng.worldGen.NoiseHelper;
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
@@ -23,7 +23,7 @@ public class MoisturePipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "moisture")
-	public float process(Point point, @Consumer(name = "height") float height) {
+	public float process(Point point, @Consume(name = "height") float height) {
 		float sample = point.sample(noise);
 		if (height <= 0) {
 			sample += height * -8;

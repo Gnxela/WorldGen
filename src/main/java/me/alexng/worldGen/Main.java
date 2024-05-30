@@ -13,13 +13,17 @@ import java.util.Map;
 public class Main {
 
 	public static void main(String[] args) throws IOException {
+		// Create a large map
 		WorldMap<PlaneSampler> worldMap = new WorldMap<>(new PlaneSampler(10000, 10000));
+		// Sample 1000 points
 		WorldMap<PlaneSampler> sampledWorldMap = new WorldMap<>(worldMap.getSampler().sample(1000, 1000));
+		/// Take the botom right quad
+		// WorldMap<PlaneSampler> sampledWorldMap = new WorldMap<>(childSampledWorldMap.getSampler().sample(500, 500, 500, 500));
 		long generationStart = System.nanoTime();
 		Map<String, float[]> resultMap = sampledWorldMap.generate(0);
 		System.out.println("Generation: " + (System.nanoTime() - generationStart) / 1000000000f + "s");
 		int width = sampledWorldMap.getSampler().getNumPointsX();
-		int height = sampledWorldMap.getSampler().getNumPointsX();
+		int height = sampledWorldMap.getSampler().getNumPointsY();
 		long writingStart = System.nanoTime();
 
 		writeMapDataToPng(width, height, resultMap.get("biome"), ColorMaps.BIOME_MAP, "maps/biome.png");

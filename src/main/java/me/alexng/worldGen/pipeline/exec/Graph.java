@@ -1,6 +1,6 @@
 package me.alexng.worldGen.pipeline.exec;
 
-import me.alexng.worldGen.pipeline.Consumer;
+import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
@@ -27,16 +27,24 @@ public class Graph {
 			createNodes(nodes, worker); // O(1) for a given worker
 		}
 		linkNodes(nodes); // O(2n)
+		HashMap<Node, HashSet<String>> unresolvedConsumes = new HashMap<>();
+		for (Node node : nodes) {
+			HashSet<String> consumes = new HashSet<>();
+			for (Consume consume : node.consumes) {
+				consumes.add(consume.name());
+			}
+			unresolvedConsumes.put(node, consumes);
+		}
 		while (nodes.size() > 0) { // O(n)
-			int foundIndex = findResolvedNode(nodes); // O(n)
+			int foundIndex = findResolvedNode(nodes, unresolvedConsumes); // O(n)
 			if (foundIndex == -1) {
 				throw new RuntimeException("Unable to resolve dependency graph");
 			}
 			Node resolvedNode = nodes.remove(foundIndex);
-			if (resolvedNode.consumers.length == 0) {
+			if (resolvedNode.consumes.length == 0) {
 				origins.add(resolvedNode);
 			}
-			resolveConsumers(nodes, resolvedNode); // O(n)
+			resolveConsumers(nodes, resolvedNode, unresolvedConsumes); // O(n)
 		}
 		// TODO: We need to validate the graph here. Ensure it is a DAG, no duplicate names, remove not-generation leaves, etc.
 	}
@@ -53,15 +61,15 @@ public class Graph {
 			if (!Point.class.isAssignableFrom(parameters[0].getType())) {
 				throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: " + worker.getClass().getSimpleName() + ":" + method.getName() + ":" + parameters[0].getName());
 			}
-			Consumer[] consumers = new Consumer[parameters.length - 1];
-			for (int i = 0; i < consumers.length; i++) {
-				Consumer consumer = parameters[i + 1].getAnnotation(Consumer.class);
-				if (consumer == null) {
+			Consume[] consumer = new Consume[parameters.length - 1];
+			for (int i = 0; i < consumer.length; i++) {
+				Consume c = parameters[i + 1].getAnnotation(Consume.class);
+				if (c == null) {
 					throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: " + method.getName() + ":" + parameters[i].getName());
 				}
-				consumers[i] = consumer;
+				consumer[i] = c;
 			}
-			nodes.add(new Node(worker, method, producer, consumers));
+			nodes.add(new Node(worker, method, producer, consumer));
 		}
 	}
 
@@ -71,24 +79,24 @@ public class Graph {
 		Map<String, List<Node>> dependencyMap = new HashMap<>();
 		nodes.forEach(node -> {
 			nodeMap.put(node.producer.name(), node);
-			Arrays.stream(node.consumers).forEach(consumer -> {
+			Arrays.stream(node.consumes).forEach(consumer -> {
 				List<Node> dependants = dependencyMap.computeIfAbsent(consumer.name(), (key) -> new LinkedList<>());
 				dependants.add(node);
 			});
 		});
-		nodes.forEach(node -> node.grabDependencies(nodeMap));
+		nodes.forEach(node -> node.setAllDependencies(nodeMap));
 		nodes.forEach(node -> node.setDependants(dependencyMap.computeIfAbsent(node.producer.name(), (key) -> new LinkedList<>())));
 	}
 
-	private void resolveConsumers(List<Node> nodes, Node resolvedNode) {
+	private void resolveConsumers(List<Node> nodes, Node resolvedNode, HashMap<Node, HashSet<String>> unresolvedConsumes) {
 		for (Node node : nodes) {
-			node.resolveConsumer(resolvedNode.producer);
+			unresolvedConsumes.get(node).remove(resolvedNode.producer.name());
 		}
 	}
 
-	private int findResolvedNode(List<Node> nodes) {
+	private int findResolvedNode(List<Node> nodes, HashMap<Node, HashSet<String>> unresolvedConsumes) {
 		for (int i = 0; i < nodes.size(); i++) {
-			if (nodes.get(i).isAvailable()) {
+			if (unresolvedConsumes.get(nodes.get(i)).isEmpty()) {
 				return i;
 			}
 		}
