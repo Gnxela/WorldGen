@@ -27,6 +27,7 @@ public class Main {
 		long writingStart = System.nanoTime();
 
 		writeMapDataToPng(width, height, resultMap.get("biome"), ColorMaps.BIOME_MAP, "maps/biome.png");
+		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.HSL_SCALE, "maps/coriolis.png");
 
 		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}

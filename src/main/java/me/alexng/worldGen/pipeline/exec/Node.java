@@ -7,7 +7,6 @@ import me.alexng.worldGen.pipeline.Producer;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A node in the pipeline dependency graph.

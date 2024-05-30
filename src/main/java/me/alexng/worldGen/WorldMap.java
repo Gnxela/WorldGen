@@ -1,7 +1,6 @@
 package me.alexng.worldGen;
 
 import me.alexng.worldGen.pipeline.exec.NaivePipelineExecutor;
-import me.alexng.worldGen.pipeline.exec.ThreadedPipelineExecutor;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Pipeline;
 import me.alexng.worldGen.pipeline.exec.PipelineExecutor;
@@ -19,6 +18,7 @@ public class WorldMap<T extends Sampler> {
 	private static final PipeWorker[] workers = new PipeWorker[]{
 		new TemperaturePipeWorker(),
 			new LandmassPipeWorker(),
+			new CoriolisPipeWorder(),
 			new MountainPipeWorker(),
 			new HeightPipeWorker(),
 			new MoisturePipeWorker(),

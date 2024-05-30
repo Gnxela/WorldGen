@@ -1,13 +1,57 @@
 package me.alexng.worldGen;
 
+import java.awt.Color;
+
 import org.joml.Vector3f;
 
 /**
- * A helper class that contains methods that map a particular {@link me.alexng.worldGen.pipeline.Pipe}'s output to color values.
+ * A helper class that contains methods that map a particular
+ * {@link me.alexng.worldGen.pipeline.Pipe}'s output to color values.
  */
 public class ColorMaps {
 
 	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(data));
+	public static final ColorMap HSL_SCALE = data -> hslColor(NoiseHelper.normalize(data), 0.5f, 0.5f);
+
+	static public Vector3f hslColor(float h, float s, float l) {
+		float q, p, r, g, b;
+
+		if (s == 0) {
+			r = g = b = l; // achromatic
+		} else {
+			q = l < 0.5 ? (l * (1 + s)) : (l + s - l * s);
+			p = 2 * l - q;
+			r = hue2rgb(p, q, h + 1.0f / 3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1.0f / 3);
+		}
+		return new Vector3f(r * 255, g * 255, b * 255);
+	}
+
+	private static float hue2rgb(float p, float q, float h) {
+		if (h < 0) {
+			h += 1;
+		}
+
+		if (h > 1) {
+			h -= 1;
+		}
+
+		if (6 * h < 1) {
+			return p + ((q - p) * 6 * h);
+		}
+
+		if (2 * h < 1) {
+			return q;
+		}
+
+		if (3 * h < 2) {
+			return p + ((q - p) * 6 * ((2.0f / 3.0f) - h));
+		}
+
+		return p;
+	}
+
 	public static final ColorMap LANDMASS_MAP = GREY_SCALE;
 
 	public static final ColorMap HEIGHT_MAP = height -> {
@@ -48,6 +92,7 @@ public class ColorMaps {
 		// TODO: Why are we returning floats from toColor()?
 		/**
 		 * Maps a pipes output to a color.
+		 * 
 		 * @param value the value. DO NOT NORMALIZE
 		 */
 		Vector3f toColor(float value);
