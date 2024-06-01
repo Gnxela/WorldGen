@@ -13,24 +13,42 @@ import me.alexng.worldGen.sampler.Sampler;
 public class CoriolisPipeWorder implements PipeWorker {
 
     private static final int NUM_BANDS = 6;
-    private int totalHeight = 0;
     private int bandWidth = 0;
 
     @Override
     public void setup(int seed, Sampler sampler) {
-        totalHeight = getTotalHeight(sampler);
-        bandWidth = totalHeight / NUM_BANDS;
+        bandWidth = getTotalHeight(sampler) / NUM_BANDS;
     }
 
     @Producer(name = "coriolis", stored = true)
     public float process(Point point) {
         int y = getY(point);
-        float d = y % bandWidth / ((float) bandWidth);
-        Vector2f in = new Vector2f(0.0f, 1.0f).mul(d);
-        Vector2f out = new Vector2f(1.0f, 0.0f).mul(1 - d);
-        in.add(out).normalize();
-        return (float) Math.tanh(in.y / in.x);
-        // return ((float) Math.sin(getY(point) % bandWidth / ((float) bandWidth) * Math.PI * 2));
+        int bandIndex = y / bandWidth;
+        float d = (y % bandWidth) / ((float) bandWidth);
+        Vector2f output;
+        switch (bandIndex) {
+            case 0:
+                output = new Vector2f(-1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
+                break;
+            case 1:
+                output = new Vector2f(1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
+                break;
+            case 2:
+                output = new Vector2f(-1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
+                break;
+            case 3:
+                output = new Vector2f(-1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
+                break;
+            case 4:
+                output = new Vector2f(1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
+                break;
+            case 5:
+                output = new Vector2f(-1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
+                break;
+            default:
+                throw new RuntimeException("Invalid band");
+        }
+        return (float) Math.tanh(output.y / output.x);
     }
 
     private int getTotalHeight(Sampler sampler) {

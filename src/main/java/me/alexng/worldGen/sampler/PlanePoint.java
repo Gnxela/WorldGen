@@ -2,6 +2,7 @@ package me.alexng.worldGen.sampler;
 
 import me.alexng.worldGen.FastNoiseLite;
 
+// (0, 0) being top left
 public class PlanePoint implements Point {
 
 	private final int x, y, index;
