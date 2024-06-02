@@ -43,7 +43,6 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 		System.out.println(node.producer.name());
 		Iterator<Point> pointIterator = sampler.getPoints();
 		float[] result = new float[sampler.getSize()];
-		int resultIndex = 0;
 		Object[] parameters = new Object[node.consumes.length + 1];
 		while (pointIterator.hasNext()) {
 			Point point = pointIterator.next();
@@ -54,12 +53,12 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 				if (consumer.blocked()) {
 					parameters[1 + i] = resultMap.get(consumer.name());
 				} else {
-					parameters[1 + i] = resultMap.get(consumer.name())[resultIndex];
+					parameters[1 + i] = resultMap.get(consumer.name())[point.getIndex()];
 				}
 			}
 
 			try {
-				result[resultIndex++] = (float) node.method.invoke(node.worker, parameters);
+				result[point.getIndex()] = (float) node.method.invoke(node.worker, parameters);
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				e.printStackTrace();
 			}

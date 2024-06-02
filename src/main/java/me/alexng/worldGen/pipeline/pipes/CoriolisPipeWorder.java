@@ -22,21 +22,24 @@ public class CoriolisPipeWorder implements PipeWorker {
 
     @Producer(name = "coriolis", stored = true)
     public float process(Point point) {
-        int y = getY(point);
-        int bandIndex = y / bandWidth;
-        float d = (y % bandWidth) / ((float) bandWidth);
+        int bandIndex = getY(point) / bandWidth;
+        float d = (getY(point) % bandWidth) / ((float) bandWidth);
         Vector2f output;
         switch (bandIndex) {
             case 0:
                 output = new Vector2f(-1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
+                // output = new Vector2f(1.0f, 0.0f);
                 break;
             case 1:
+                // output = new Vector2f(-1.0f, 0.0f);
                 output = new Vector2f(1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
                 break;
             case 2:
+                // output = new Vector2f(0.0f, 1.0f);
                 output = new Vector2f(-1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
                 break;
             case 3:
+                // output = new Vector2f(0.0f, -1.0f);
                 output = new Vector2f(-1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
                 break;
             case 4:
@@ -48,7 +51,13 @@ public class CoriolisPipeWorder implements PipeWorker {
             default:
                 throw new RuntimeException("Invalid band");
         }
-        return (float) Math.tanh(output.y / output.x);
+        if (output.x == 0) {
+            return output.y;
+        } else if (output.y == 0) {
+            return output.x;
+        } else {
+            return (float) Math.tanh(output.y / output.x);
+        }
     }
 
     private int getTotalHeight(Sampler sampler) {

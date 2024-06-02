@@ -27,15 +27,17 @@ public class Main {
 		long writingStart = System.nanoTime();
 
 		writeMapDataToPng(width, height, resultMap.get("biome"), ColorMaps.BIOME_MAP, "maps/biome.png");
+		writeMapDataToPng(width, height, resultMap.get("temperature"), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
 		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.HSL_SCALE, "maps/coriolis.png");
 		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.GREY_SCALE, "maps/coriolis_grey.png");
+		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.GREY_SCALE, "maps/wind.png");
 
-		float[] c = resultMap.get("coriolis");
-		int numPoints = 100;
-		int d = 1000 / numPoints;
-		for (int i = 0; i < numPoints; i++) {
-			System.out.println(i * d + ":\n\t" + c[i * d * 1000] + "\n\t" + angularDist(0f, ((float) Math.toDegrees(c[i * d * 1000] * Math.PI)) + 180f));
-		}
+		// float[] c = resultMap.get("coriolis");
+		// int numPoints = 100;
+		// int d = 1000 / numPoints;
+		// for (int i = 0; i < numPoints; i++) {
+		// 	System.out.println(i * d + ":\n\t" + c[i * d * 1000] + "\n\t" + angularDist(0f, ((float) Math.toDegrees(c[i * d * 1000] * Math.PI)) + 180f));
+		// }
 
 		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}

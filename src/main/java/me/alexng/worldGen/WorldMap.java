@@ -19,6 +19,7 @@ public class WorldMap<T extends Sampler> {
 		new TemperaturePipeWorker(),
 			new LandmassPipeWorker(),
 			new CoriolisPipeWorder(),
+			new WindPipeWorder(),
 			new MountainPipeWorker(),
 			new HeightPipeWorker(),
 			new MoisturePipeWorker(),

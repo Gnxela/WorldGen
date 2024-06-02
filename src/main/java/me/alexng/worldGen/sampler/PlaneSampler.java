@@ -91,6 +91,10 @@ public class PlaneSampler implements Sampler {
 		return totalHeight;
 	}
 
+	public int getTotalWidth() {
+		return totalWidth;
+	}
+
 	/**
 	 * Returns the number of points that will be sampled by this Sampler.
 	 */
