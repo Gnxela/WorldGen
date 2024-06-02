@@ -1,7 +1,6 @@
 package me.alexng.worldGen.pipeline.pipes;
 
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;

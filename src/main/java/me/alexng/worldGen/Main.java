@@ -30,7 +30,7 @@ public class Main {
 		writeMapDataToPng(width, height, resultMap.get("temperature"), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
 		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.HSL_SCALE, "maps/coriolis.png");
 		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.GREY_SCALE, "maps/coriolis_grey.png");
-		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.GREY_SCALE, "maps/wind.png");
+		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.HSL_SCALE, "maps/wind.png");
 
 		// float[] c = resultMap.get("coriolis");
 		// int numPoints = 100;

@@ -30,9 +30,8 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 			if (node.producer.stored()) {
 				finalResultMap.put(node.producer.name(), result);
 			}
-
-			node.dependants.stream().filter(n -> !visitedNodes.contains(n)).forEach(n -> {
-				visitedNodes.add(n);
+			visitedNodes.add(node);
+			node.dependants.stream().filter(n -> n.dependencies.stream().allMatch(visitedNodes::contains)).forEach(n -> {
 				nodeQueue.add(n);
 			});
 		}
@@ -50,6 +49,9 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 			for (int i = 0; i < node.consumes.length; i++) {
 				// TODO: We shouldn't read from the map for every point. But this works for now.
 				Consume consumer = node.consumes[i];
+				if (!resultMap.containsKey(consumer.name())) {
+					System.out.println("Failed to read consumer " + consumer.name());
+				}
 				if (consumer.blocked()) {
 					parameters[1 + i] = resultMap.get(consumer.name());
 				} else {
