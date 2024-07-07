@@ -13,8 +13,8 @@ import me.alexng.worldGen.sampler.Sampler;
 public class LandmassPipeWorker implements PipeWorker {
 
 	// x < SHORE_START -> biome(x) == OCEAN. x > SHORE_END -> biome(x) != OCEAN
-	private static final float SHORE_START = -0.2f;
-	private static final float SHORE_WIDTH = 0.6f;
+	private static final float SHORE_START = -0.4f;
+	private static final float SHORE_WIDTH = 0.9f;
 	private static final float SHORE_END = SHORE_START + SHORE_WIDTH;
 
 	private FastNoiseLite noise;

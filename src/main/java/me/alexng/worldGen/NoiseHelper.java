@@ -21,9 +21,9 @@ public class NoiseHelper {
 	public static FastNoiseLite getLandHeightMapNoise(int seed) {
 		FastNoiseLite noise = new FastNoiseLite();
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-		noise.SetRotationType3D(FastNoiseLite.RotationType3D.None);
+		noise.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXYPlanes);
 		noise.SetSeed(seed);
-		noise.SetFrequency(0.00125f);
+		noise.SetFrequency(0.000125f);
 
 		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
 		noise.SetFractalOctaves(6);

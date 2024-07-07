@@ -23,13 +23,15 @@ public class WindPipeWorder implements PipeWorker {
     @Producer(name = "wind", stored = true)
     public float process(PlanePoint point, @Consume(name = "temp_average") float temperature,
             @Consume(name = "coriolis") float coriolis) {
-        return (temperature + coriolis) / 2.0f;
+        // TODO: Convert angles and then add.
+        // TODO: Temperature map needs to be processed into pressure vector
+        return (temperature + coriolis);
     }
 
     @Producer(name = "temp_average", stored = true)
     public float tempAverage(PlanePoint point, @Consume(name = "temperature", blocked = true) float[] temperature) {
-        Vector2f val = new Vector2f();
         int num = 0;
+        float total = 0;
         int lx = point.getIndex() % sampleWidth;
         int ly = point.getIndex() / sampleWidth;
         for (int dx = 0; dx < SAMPLE_WIDTH; dx++) {
@@ -42,13 +44,11 @@ public class WindPipeWorder implements PipeWorker {
                 if (ny < 0 || ny >= sampleHeight) {
                     continue;
                 }
-                float t = temperature[ny * sampleWidth + nx];
-                val.add(new Vector2f(nx - lx == 0 ? 0 : t / (float) (nx - lx),
-                        ny - ly == 0 ? 0 : t / (float) (ny - ly)));
+                total += temperature[ny * sampleWidth + nx];
                 num++;
             }
         }
-        return (float) Math.tanh((val.y / val.x));
+        return total / num;
     }
 
     private int getSampleHeight(Sampler sampler) {
