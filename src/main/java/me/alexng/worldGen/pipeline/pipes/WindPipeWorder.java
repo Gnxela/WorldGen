@@ -2,6 +2,7 @@ package me.alexng.worldGen.pipeline.pipes;
 
 import org.joml.Vector2f;
 
+import me.alexng.worldGen.Nullable;
 import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
@@ -20,12 +21,12 @@ public class WindPipeWorder implements PipeWorker {
         sampleHeight = getSampleHeight(sampler);
     }
 
-    @Producer(name = "wind", stored = true)
-    public float process(PlanePoint point, @Consume(name = "temp_average") float temperature,
+    @Producer(name = "wind", stored = true, iterated = true, iterations = 1)
+    public float process(PlanePoint point, @Nullable @Consume(name = "wind") float wind, @Consume(name = "temp_average") float temperature,
             @Consume(name = "coriolis") float coriolis) {
         // TODO: Convert angles and then add.
         // TODO: Temperature map needs to be processed into pressure vector
-        return (temperature + coriolis);
+        return (wind + temperature + coriolis) / 3;
     }
 
     @Producer(name = "temp_average", stored = true)

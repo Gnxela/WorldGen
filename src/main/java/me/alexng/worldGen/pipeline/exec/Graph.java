@@ -34,6 +34,9 @@ public class Graph {
 		for (Node node : nodes) {
 			HashSet<String> consumes = new HashSet<>();
 			for (Consume consume : node.consumes) {
+				if (node.producer.iterated() && node.producer.name().equals(consume.name())) {
+					continue;
+				}
 				consumes.add(consume.name());
 			}
 			unresolvedConsumes.put(node, consumes);
@@ -41,6 +44,11 @@ public class Graph {
 		while (nodes.size() > 0) { // O(n)
 			int foundIndex = findResolvedNode(nodes, unresolvedConsumes); // O(n)
 			if (foundIndex == -1) {
+				for (Node n : unresolvedConsumes.keySet()) {
+					if (!unresolvedConsumes.get(n).isEmpty()) {
+						System.out.println(n.producer.name());
+					}
+				}
 				throw new RuntimeException("Unable to resolve dependency graph");
 			}
 			Node resolvedNode = nodes.remove(foundIndex);
@@ -70,7 +78,7 @@ public class Graph {
 						+ worker.getClass().getSimpleName() + ":" + method.getName() + ":" + parameters[0].getName());
 			}
 			Consume[] consumer = new Consume[parameters.length - 1];
-			for (int i = 0; i < consumer.length; i++) {
+			for (int i = 0; i < parameters.length - 1; i++) {
 				Consume c = parameters[i + 1].getAnnotation(Consume.class);
 				if (c == null) {
 					throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: "

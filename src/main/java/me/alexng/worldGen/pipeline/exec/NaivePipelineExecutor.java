@@ -25,8 +25,11 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 		nodeQueue.addAll(generationPipeline.getGraph().getOrigins());
 		while (!nodeQueue.isEmpty()) {
 			Node node = nodeQueue.remove();
-			float[] result = runNode(node, sampler, resultMap);
-			resultMap.put(node.producer.name(), result);
+			float[] result = null;
+			for (int i = 0; i < node.producer.iterations(); i++) {
+				result = runNode(node, sampler, resultMap);
+				resultMap.put(node.producer.name(), result);
+			}
 			if (node.producer.stored()) {
 				finalResultMap.put(node.producer.name(), result);
 			}
@@ -46,16 +49,17 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 		while (pointIterator.hasNext()) {
 			Point point = pointIterator.next();
 			parameters[0] = point;
-			for (int i = 0; i < node.consumes.length; i++) {
+			int readIndex = 0;
+			for (int i = 1; i < parameters.length; i++) {
 				// TODO: We shouldn't read from the map for every point. But this works for now.
-				Consume consumer = node.consumes[i];
+				Consume consumer = node.consumes[readIndex++];
 				if (!resultMap.containsKey(consumer.name())) {
 					System.out.println("Failed to read consumer " + consumer.name());
 				}
 				if (consumer.blocked()) {
-					parameters[1 + i] = resultMap.get(consumer.name());
+					parameters[i] = resultMap.get(consumer.name());
 				} else {
-					parameters[1 + i] = resultMap.get(consumer.name())[point.getIndex()];
+					parameters[i] = resultMap.get(consumer.name())[point.getIndex()];
 				}
 			}
 

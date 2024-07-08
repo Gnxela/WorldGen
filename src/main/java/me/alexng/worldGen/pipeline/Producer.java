@@ -18,4 +18,15 @@ public @interface Producer {
 	 * Returns true if the data should be stored in memory after being produced.
 	 */
 	boolean stored() default false;
+
+	/**
+	 * Returns true if the data should be stored in memory after being produced.
+	 */
+	boolean iterated() default false;
+
+		/**
+	 * Returns true if the data should be stored in memory after being produced.
+	 */
+	int iterations() default 1;
+
 }
