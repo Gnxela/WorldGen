@@ -25,6 +25,7 @@ public class WindPipeWorder implements PipeWorker {
     public float process(PlanePoint point, @Nullable @Consume(name = "wind") float wind, @Consume(name = "temp_average") float temperature,
             @Consume(name = "coriolis") float coriolis) {
         // TODO: Convert angles and then add.
+        // TODO: Need support for blocked iterative nodes
         // TODO: Temperature map needs to be processed into pressure vector
         return (wind + temperature + coriolis) / 3;
     }
