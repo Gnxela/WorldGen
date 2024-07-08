@@ -27,7 +27,7 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 			Node node = nodeQueue.remove();
 			float[] result = null;
 			for (int i = 0; i < node.producer.iterations(); i++) {
-				result = runNode(node, sampler, resultMap);
+				result = runNode(node, i, sampler, resultMap);
 				resultMap.put(node.producer.name(), result);
 			}
 			if (node.producer.stored()) {
@@ -41,25 +41,35 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 		return finalResultMap;
 	}
 
-	private float[] runNode(Node node, Sampler sampler, Map<String, float[]> resultMap) {
+	private float[] runNode(Node node, int iteration_index, Sampler sampler, Map<String, float[]> resultMap) {
 		System.out.println(node.producer.name());
 		Iterator<Point> pointIterator = sampler.getPoints();
 		float[] result = new float[sampler.getSize()];
-		Object[] parameters = new Object[node.consumes.length + 1];
+		Object[] parameters = new Object[node.consumes.length + 1 + (node.producer.iterated() ? 1 : 0)];
 		while (pointIterator.hasNext()) {
 			Point point = pointIterator.next();
-			parameters[0] = point;
+			int writeIndex = 0;
 			int readIndex = 0;
-			for (int i = 1; i < parameters.length; i++) {
+			parameters[writeIndex++] = point;
+			if (node.producer.iterated()) {
+				parameters[writeIndex++] = iteration_index;
+			}
+			for (; writeIndex < parameters.length; writeIndex++) {
 				// TODO: We shouldn't read from the map for every point. But this works for now.
 				Consume consumer = node.consumes[readIndex++];
-				if (!resultMap.containsKey(consumer.name())) {
-					System.out.println("Failed to read consumer " + consumer.name());
+				float[] r = resultMap.get(consumer.name());
+				if (r == null && node.producer.iterated() && node.producer.name().equals(consumer.name())) {
+					if (consumer.blocked()) {
+						parameters[writeIndex] = new float[0];
+					} else {
+						parameters[writeIndex] = 0f;
+					}
+					continue;
 				}
 				if (consumer.blocked()) {
-					parameters[i] = resultMap.get(consumer.name());
+					parameters[writeIndex] = r;
 				} else {
-					parameters[i] = resultMap.get(consumer.name())[point.getIndex()];
+					parameters[writeIndex] = r[point.getIndex()];
 				}
 			}
 
@@ -67,6 +77,7 @@ public class NaivePipelineExecutor implements PipelineExecutor{
 				result[point.getIndex()] = (float) node.method.invoke(node.worker, parameters);
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 		return result;

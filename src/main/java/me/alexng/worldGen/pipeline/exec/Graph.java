@@ -5,7 +5,6 @@ import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.sampler.Point;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
@@ -74,17 +73,32 @@ public class Graph {
 			// First parameter must be a point, rest must be consumers
 			Parameter[] parameters = method.getParameters();
 			if (!Point.class.isAssignableFrom(parameters[0].getType())) {
-				throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: "
-						+ worker.getClass().getSimpleName() + ":" + method.getName() + ":" + parameters[0].getName());
+				throw new RuntimeException(
+						"Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]: "
+								+ worker.getClass().getSimpleName() + ":" + method.getName() + ":"
+								+ parameters[0].getName());
 			}
-			Consume[] consumer = new Consume[parameters.length - 1];
-			for (int i = 0; i < parameters.length - 1; i++) {
-				Consume c = parameters[i + 1].getAnnotation(Consume.class);
-				if (c == null) {
-					throw new RuntimeException("Parameters must follow pattern [Point, Consumer, Consumer, ...]: "
-							+ method.getName() + ":" + parameters[i].getName());
+			int readIndex = 1;
+			if (producer.iterated()) {
+				readIndex++;
+				// ????
+				if (!parameters[1].getType().toString().equals("int")) {
+					throw new RuntimeException(
+							"Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]: "
+									+ worker.getClass().getSimpleName() + ":" + method.getName() + ":"
+									+ parameters[1].getName());
 				}
-				consumer[i] = c;
+			}
+			Consume[] consumer = new Consume[parameters.length - readIndex];
+			for (int writeIndex = 0; readIndex < parameters.length; writeIndex++) {
+				Consume c = parameters[readIndex++].getAnnotation(Consume.class);
+				// TODO: This does nothing really. check type instead
+				if (c == null) {
+					throw new RuntimeException(
+							"Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]: "
+									+ method.getName() + ":" + parameters[--readIndex].getName());
+				}
+				consumer[writeIndex] = c;
 			}
 			nodes.add(new Node(worker, method, producer, consumer));
 		}
@@ -94,13 +108,16 @@ public class Graph {
 		// TODO: These should be a better way to resolve these.
 		Map<String, Node> nodeMap = new HashMap<>();
 		Map<String, List<Node>> dependencyMap = new HashMap<>();
-		nodes.forEach(node -> {
+		for (Node node : nodes) {
 			nodeMap.put(node.producer.name(), node);
-			Arrays.stream(node.consumes).forEach(consumer -> {
+			for (Consume consumer : node.consumes) {
+				if (node.producer.name().equals(consumer.name())) {
+					continue;
+				}
 				List<Node> dependants = dependencyMap.computeIfAbsent(consumer.name(), (key) -> new LinkedList<>());
 				dependants.add(node);
-			});
-		});
+			}
+		}
 		nodes.forEach(node -> node.setAllDependencies(nodeMap));
 		nodes.forEach(node -> node
 				.setDependants(dependencyMap.computeIfAbsent(node.producer.name(), (key) -> new LinkedList<>())));

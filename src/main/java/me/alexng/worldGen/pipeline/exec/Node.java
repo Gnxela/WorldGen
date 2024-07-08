@@ -7,7 +7,6 @@ import me.alexng.worldGen.pipeline.Producer;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * A node in the pipeline dependency graph.
@@ -39,7 +38,7 @@ class Node {
 	public void setDependants(List<Node> dependants) {
 		storedOrBlockingDependants = storedOrBlockingDependants | dependants.stream()
 				.anyMatch(dependant -> Arrays.stream(dependant.consumes).anyMatch(Consume::blocked));
-		this.dependants = dependants.stream().filter(n -> !n.producer.iterated()).collect(Collectors.toList());
+		this.dependants = dependants;
 	}
 
 	public void setAllDependencies(Map<String, Node> nodeMap) {

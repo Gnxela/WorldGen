@@ -1,7 +1,5 @@
 package me.alexng.worldGen.pipeline.pipes;
 
-import org.joml.Vector2f;
-
 import me.alexng.worldGen.Nullable;
 import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
@@ -21,13 +19,16 @@ public class WindPipeWorder implements PipeWorker {
         sampleHeight = getSampleHeight(sampler);
     }
 
-    @Producer(name = "wind", stored = true, iterated = true, iterations = 1)
-    public float process(PlanePoint point, @Nullable @Consume(name = "wind") float wind, @Consume(name = "temp_average") float temperature,
+    @Producer(name = "wind", stored = true, iterated = true, iterations = 10)
+    public float process(
+            PlanePoint point,
+            int iteration_index,
+            @Nullable @Consume(name = "wind", blocked = true) float[] wind,
+            @Consume(name = "temp_average") float temperature,
             @Consume(name = "coriolis") float coriolis) {
         // TODO: Convert angles and then add.
-        // TODO: Need support for blocked iterative nodes
         // TODO: Temperature map needs to be processed into pressure vector
-        return (wind + temperature + coriolis) / 3;
+        return ((iteration_index > 0 ? wind[point.getIndex()] : 0f) + temperature + coriolis) / 3.0f;
     }
 
     @Producer(name = "temp_average", stored = true)
