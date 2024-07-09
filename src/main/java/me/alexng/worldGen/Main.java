@@ -1,14 +1,16 @@
 package me.alexng.worldGen;
 
-import me.alexng.worldGen.sampler.PlaneSampler;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.MemoryImageSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import me.alexng.worldGen.sampler.PlaneSampler;
 
 public class Main {
 
@@ -30,9 +32,8 @@ public class Main {
 		writeMapDataToPng(width, height, resultMap.get("biome"), ColorMaps.BIOME_MAP, "maps/biome.png");
 		writeMapDataToPng(width, height, resultMap.get("temperature"), ColorMaps.TEMPERATURE_MAP,
 				"maps/temperature.png");
-		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.HSL_SCALE, "maps/coriolis.png");
-		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.GREY_SCALE, "maps/coriolis_grey.png");
-		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.HSL_SCALE, "maps/wind.png");
+		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.WIND_SCALE, "maps/coriolis.png");
+		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.WIND_SCALE, "maps/wind.png");
 
 		// float[] c = resultMap.get("coriolis");
 		// int numPoints = 100;

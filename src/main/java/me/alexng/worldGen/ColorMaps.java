@@ -2,6 +2,8 @@ package me.alexng.worldGen;
 
 import org.joml.Vector3f;
 
+import me.alexng.worldGen.pipeline.pipes.dto.Velocity;
+
 /**
  * A helper class that contains methods that map a particular
  * {@link me.alexng.worldGen.pipeline.Pipe}'s output to color values.
@@ -9,6 +11,12 @@ import org.joml.Vector3f;
 public class ColorMaps {
 
 	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(toFloat(data)));
+	public static final ColorMap WIND_SCALE = data -> hslColor(
+			NoiseHelper.normalize(
+					(float) Math.tanh(((Velocity) data).direction.y / ((Velocity) data).direction.x)),
+			0.5f,
+			// 0.5f);
+			((Velocity) data).magnitude);
 	public static final ColorMap HSL_SCALE = data -> hslColor(NoiseHelper.normalize(toFloat(data)), 0.5f, 0.5f);
 
 	static public Vector3f hslColor(float h, float s, float l) {
