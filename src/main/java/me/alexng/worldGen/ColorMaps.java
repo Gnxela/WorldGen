@@ -1,7 +1,5 @@
 package me.alexng.worldGen;
 
-import java.awt.Color;
-
 import org.joml.Vector3f;
 
 /**
@@ -10,8 +8,8 @@ import org.joml.Vector3f;
  */
 public class ColorMaps {
 
-	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(data));
-	public static final ColorMap HSL_SCALE = data -> hslColor(NoiseHelper.normalize(data), 0.5f, 0.5f);
+	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(toFloat(data)));
+	public static final ColorMap HSL_SCALE = data -> hslColor(NoiseHelper.normalize(toFloat(data)), 0.5f, 0.5f);
 
 	static public Vector3f hslColor(float h, float s, float l) {
 		float q, p, r, g, b;
@@ -54,7 +52,8 @@ public class ColorMaps {
 
 	public static final ColorMap LANDMASS_MAP = GREY_SCALE;
 
-	public static final ColorMap HEIGHT_MAP = height -> {
+	public static final ColorMap HEIGHT_MAP = heightO -> {
+		float height = toFloat(heightO);
 		if (height <= 0) {
 			return new Vector3f(0, 0, 255 * (1 + height));
 		} else {
@@ -69,12 +68,14 @@ public class ColorMaps {
 		}
 	};
 
-	public static final ColorMap TEMPERATURE_MAP = temperature -> {
+	public static final ColorMap TEMPERATURE_MAP = temperatureO -> {
+		float temperature = toFloat(temperatureO);
 		float temperatureNormalized = NoiseHelper.normalize(temperature);
 		return new Vector3f(temperatureNormalized * 255, 0, (1 - temperatureNormalized) * 255);
 	};
 
-	public static final ColorMap MOISTURE_MAP = moisture -> {
+	public static final ColorMap MOISTURE_MAP = moistureO -> {
+		float moisture = toFloat(moistureO);
 		float moistureNormalized = NoiseHelper.normalize(moisture);
 		return new Vector3f((1 - moistureNormalized) * 255, 0, moistureNormalized * 255);
 	};
@@ -95,12 +96,12 @@ public class ColorMaps {
 		 * 
 		 * @param value the value. DO NOT NORMALIZE
 		 */
-		Vector3f toColor(float value);
+		Vector3f toColor(Object value);
 
 		/**
 		 * Converts floats to ARGB ints.
 		 */
-		default int[] packToPixels(float[] rawData) {
+		default int[] packToPixels(Object[] rawData) {
 			int[] array = new int[rawData.length];
 			for (int i = 0; i < rawData.length; i++) {
 				Vector3f color = toColor(rawData[i]);
@@ -108,5 +109,9 @@ public class ColorMaps {
 			}
 			return array;
 		}
+	}
+
+	private static float toFloat(Object o) {
+		return (float) o;
 	}
 }

@@ -34,7 +34,7 @@ public class TemperaturePipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "temperature", stored = true)
-	public float process(Point point, @Consume(name = "height") float height) {
+	public Float process(Point point, @Consume(name = "height") float height) {
 		int y = getY(point);
 		float latitudeTemp = gradientCache.computeIfAbsent(y, k -> calculateHeatGradient(y)); // [-1, 1]
 		float sample = point.sample(noise); // [-1, 1]

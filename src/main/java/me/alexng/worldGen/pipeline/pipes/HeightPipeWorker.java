@@ -24,7 +24,7 @@ public class HeightPipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "height")
-	public float process(Point point, @Consume(name = "landmass") float landmass, @Consume(name = "mountain") float mountain) {
+	public Float process(Point point, @Consume(name = "landmass") float landmass, @Consume(name = "mountain") float mountain) {
 		float landmassNormalized = NoiseHelper.normalize(landmass);
 		float mountainNormalized = NoiseHelper.normalize(mountain);
 		if (landmassNormalized == 0) { // Ocean

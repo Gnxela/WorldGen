@@ -23,7 +23,7 @@ public class MoisturePipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "moisture")
-	public float process(Point point, @Consume(name = "height") float height) {
+	public Float process(Point point, @Consume(name = "height") float height) {
 		float sample = point.sample(noise);
 		if (height <= 0) {
 			sample += height * -8;

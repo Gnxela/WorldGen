@@ -32,7 +32,7 @@ public class ThreadedPipelineExecutor implements PipelineExecutor {
 	}
 
 	@Override
-	public Map<String, float[]> execute(Sampler sampler) {
+	public Map<String, Object[]> execute(Sampler sampler) {
 		Thread[] threadPool = new Thread[numThreads];
 		for (int i = 0; i < threadPool.length; i++) {
 			threadPool[i] = new Thread(new WorkerThread(pipeline, isCompleted, jobQueue, storage));

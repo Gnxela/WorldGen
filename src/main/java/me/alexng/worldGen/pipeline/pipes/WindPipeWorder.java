@@ -1,5 +1,7 @@
 package me.alexng.worldGen.pipeline.pipes;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import me.alexng.worldGen.Nullable;
 import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.PipeWorker;
@@ -20,11 +22,11 @@ public class WindPipeWorder implements PipeWorker {
     }
 
     @Producer(name = "wind", stored = true, iterated = true, iterations = 10)
-    public float process(
+    public Float process(
             PlanePoint point,
             int iteration_index,
-            @Nullable @Consume(name = "wind", blocked = true) float[] wind,
-            @Consume(name = "temp_average") float temperature,
+            @Nullable @Consume(name = "wind", blocked = true) Float[] wind,
+            @Consume(name = "temp_average") Float temperature,
             @Consume(name = "coriolis") float coriolis) {
         // TODO: Convert angles and then add.
         // TODO: Need to support magnitudes in angles. Maybe allow for Object[] as map values?
@@ -33,7 +35,7 @@ public class WindPipeWorder implements PipeWorker {
     }
 
     @Producer(name = "temp_average", stored = true)
-    public float tempAverage(PlanePoint point, @Consume(name = "temperature", blocked = true) float[] temperature) {
+    public Float tempAverage(PlanePoint point, @Consume(name = "temperature", blocked = true) Float[] temperature) {
         int num = 0;
         float total = 0;
         int lx = point.getIndex() % sampleWidth;

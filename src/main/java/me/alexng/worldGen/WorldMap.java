@@ -39,7 +39,7 @@ public class WorldMap<T extends Sampler> {
 		pipelineExecutor = new NaivePipelineExecutor(generationPipeline);
 	}
 
-	public Map<String, float[]> generate(int seed) {
+	public Map<String, Object[]> generate(int seed) {
 		generationPipeline.setup(seed, sampler);
 		return pipelineExecutor.execute(sampler);
 	}

@@ -19,7 +19,7 @@ public class BiomePipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "biome", stored = true)
-	public float process(Point point, @Consume(name = "height") float height, @Consume(name = "temperature") float temperature, @Consume(name = "moisture") float moisture) {
+	public Integer process(Point point, @Consume(name = "height") float height, @Consume(name = "temperature") float temperature, @Consume(name = "moisture") float moisture) {
 		if (height <= 0) {
 			return Biome.OCEAN.getId();
 		} else {

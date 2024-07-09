@@ -91,14 +91,13 @@ public class Graph {
 			}
 			Consume[] consumer = new Consume[parameters.length - readIndex];
 			for (int writeIndex = 0; readIndex < parameters.length; writeIndex++) {
-				Consume c = parameters[readIndex++].getAnnotation(Consume.class);
 				// TODO: This does nothing really. check type instead
-				if (c == null) {
-					throw new RuntimeException(
-							"Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]: "
-									+ method.getName() + ":" + parameters[--readIndex].getName());
-				}
-				consumer[writeIndex] = c;
+				// if (c == null) {
+				// 	throw new RuntimeException(
+				// 			"Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]: "
+				// 					+ method.getName() + ":" + parameters[--readIndex].getName());
+				// }
+				consumer[writeIndex] = parameters[readIndex++].getAnnotation(Consume.class);
 			}
 			nodes.add(new Node(worker, method, producer, consumer));
 		}

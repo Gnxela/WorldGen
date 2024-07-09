@@ -20,7 +20,7 @@ public class CoriolisPipeWorder implements PipeWorker {
     }
 
     @Producer(name = "coriolis", stored = true)
-    public float process(Point point) {
+    public Float process(Point point) {
         int bandIndex = getY(point) / bandWidth;
         float d = (getY(point) % bandWidth) / ((float) bandWidth);
         Vector2f output;

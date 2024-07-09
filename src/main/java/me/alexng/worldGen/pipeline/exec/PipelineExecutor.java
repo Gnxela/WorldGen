@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface PipelineExecutor {
 	// TODO: Do we want a specialised object?
-	Map<String, float[]> execute(Sampler sampler);
+	Map<String, Object[]> execute(Sampler sampler);
 }

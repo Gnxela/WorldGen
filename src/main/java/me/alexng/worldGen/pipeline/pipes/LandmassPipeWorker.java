@@ -25,12 +25,12 @@ public class LandmassPipeWorker implements PipeWorker {
 	}
 
 	@Producer(name = "landmass")
-	public float process(Point point) {
+	public Float process(Point point) {
 		float height = point.sample(noise);
 		if (height > SHORE_END) {
-			return 1;
+			return 1f;
 		} else if (height < SHORE_START) {
-			return -1;
+			return -1f;
 		} else {
 			return (height - SHORE_START) / SHORE_WIDTH * 2 - 1;
 		}
