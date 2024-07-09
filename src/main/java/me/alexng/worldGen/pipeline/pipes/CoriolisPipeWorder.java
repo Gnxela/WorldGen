@@ -55,6 +55,7 @@ public class CoriolisPipeWorder implements PipeWorker {
         } else if (output.y == 0) {
             return output.x;
         } else {
+            // TODO: Scale the output using sin(x)
             return (float) Math.tanh(output.y / output.x);
         }
     }

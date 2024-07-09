@@ -27,6 +27,7 @@ public class WindPipeWorder implements PipeWorker {
             @Consume(name = "temp_average") float temperature,
             @Consume(name = "coriolis") float coriolis) {
         // TODO: Convert angles and then add.
+        // TODO: Need to support magnitudes in angles. Maybe allow for Object[] as map values?
         // TODO: Temperature map needs to be processed into pressure vector
         return ((iteration_index > 0 ? wind[point.getIndex()] : 0f) + temperature + coriolis) / 3.0f;
     }
