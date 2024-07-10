@@ -50,17 +50,6 @@ public class Main {
 		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}
 
-	/*
-	 * Given 2 angles between 0, 360
-	 */
-	private static float angularDist(float x, float y) {
-		float a = Math.abs(x - y);
-		if (a < 180) {
-			return a;
-		}
-		return 360 - a;
-	}
-
 	private static void writeMapDataToPng(int width, int height, Object[] rawData, ColorMaps.ColorMap colorMap,
 			String outputPath) throws IOException {
 		MemoryImageSource imageSource = new MemoryImageSource(width, height, colorMap.packToPixels(rawData), 0, width);

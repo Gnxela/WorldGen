@@ -2,7 +2,6 @@ package me.alexng.worldGen.pipeline.exec;
 
 import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.Pipeline;
-import me.alexng.worldGen.sampler.PlanePoint;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 

@@ -8,7 +8,6 @@ import me.alexng.worldGen.sampler.Point;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A class that represents a pipelines DAG.
@@ -56,8 +55,6 @@ public class Graph {
 				System.out.println("Origin:");
 			}
 			resolveConsumers(nodes, resolvedNode, unresolvedConsumes); // O(n)
-			System.out.println("Resolved consumer: " + resolvedNode.producer.name() + " -> "
-					+ Arrays.stream(resolvedNode.consumes).map(Consume::name).collect(Collectors.joining(",")));
 		}
 		// TODO: We need to validate the graph here. Ensure it is a DAG, no duplicate
 		// names, remove not-generation leaves, etc.
@@ -93,9 +90,10 @@ public class Graph {
 			for (int writeIndex = 0; readIndex < parameters.length; writeIndex++) {
 				// TODO: This does nothing really. check type instead
 				// if (c == null) {
-				// 	throw new RuntimeException(
-				// 			"Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]: "
-				// 					+ method.getName() + ":" + parameters[--readIndex].getName());
+				// throw new RuntimeException(
+				// "Parameters must follow pattern [Point, [Integer], Consumer, Consumer, ...]:
+				// "
+				// + method.getName() + ":" + parameters[--readIndex].getName());
 				// }
 				consumer[writeIndex] = parameters[readIndex++].getAnnotation(Consume.class);
 			}
