@@ -24,16 +24,20 @@ public class Main {
 		/// WorldMap<>(childSampledWorldMap.getSampler().sample(500, 500, 500, 500));
 		long generationStart = System.nanoTime();
 		Map<String, Object[]> resultMap = sampledWorldMap.generate(0);
-		System.out.println("Generation: " + (System.nanoTime() - generationStart) / 1000000000f + "s");
+		System.out.println("Generation: " + (System.nanoTime() - generationStart) / 1_000_000_000f + "s");
 		int width = sampledWorldMap.getSampler().getNumPointsX();
 		int height = sampledWorldMap.getSampler().getNumPointsY();
 		long writingStart = System.nanoTime();
 
+		writeMapDataToPng(width, height, resultMap.get("landmass"), ColorMaps.GREY_SCALE, "maps/landmass.png");
+		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.VELOCITY_TO_HSL, "maps/coriolis.png");
+		writeMapDataToPng(width, height, resultMap.get("mountain"), ColorMaps.GREY_SCALE, "maps/mountain.png");
+		writeMapDataToPng(width, height, resultMap.get("height"), ColorMaps.HEIGHT_MAP, "maps/height.png");
+		writeMapDataToPng(width, height, resultMap.get("temperature"), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
+		writeMapDataToPng(width, height, resultMap.get("moisture"), ColorMaps.MOISTURE_MAP, "maps/moisture.png");
+		writeMapDataToPng(width, height, resultMap.get("precipitation"), ColorMaps.GREY_SCALE, "maps/precipitation.png");
 		writeMapDataToPng(width, height, resultMap.get("biome"), ColorMaps.BIOME_MAP, "maps/biome.png");
-		writeMapDataToPng(width, height, resultMap.get("temperature"), ColorMaps.TEMPERATURE_MAP,
-				"maps/temperature.png");
-		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.WIND_SCALE, "maps/coriolis.png");
-		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.WIND_SCALE, "maps/wind.png");
+		writeMapDataToPng(width, height, resultMap.get("wind"), ColorMaps.VELOCITY_TO_HSL, "maps/wind.png");
 
 		// float[] c = resultMap.get("coriolis");
 		// int numPoints = 100;

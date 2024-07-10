@@ -41,7 +41,8 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 						nodeQueue.add(n);
 					});
 		}
-		return finalResultMap;
+		// return finalResultMap;
+		return resultMap;
 	}
 
 	private Object[] runNode(Node node, int iteration_index, Sampler sampler, Map<String, Object[]> resultMap) {

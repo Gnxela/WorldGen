@@ -11,7 +11,7 @@ import me.alexng.worldGen.pipeline.pipes.dto.Velocity;
 public class ColorMaps {
 
 	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(toFloat(data)));
-	public static final ColorMap WIND_SCALE = data -> hslColor(
+	public static final ColorMap VELOCITY_TO_HSL = data -> hslColor(
 			NoiseHelper.normalize(
 					(float) Math.tanh(((Velocity) data).direction.y / ((Velocity) data).direction.x)),
 			0.5f,
@@ -57,8 +57,6 @@ public class ColorMaps {
 
 		return p;
 	}
-
-	public static final ColorMap LANDMASS_MAP = GREY_SCALE;
 
 	public static final ColorMap HEIGHT_MAP = heightO -> {
 		float height = toFloat(heightO);
