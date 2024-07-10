@@ -14,11 +14,31 @@ import me.alexng.worldGen.sampler.PlaneSampler;
 
 public class Main {
 
+	// digraph G {
+	// 	subgraph cluster_1 {
+	// 		color=blue
+	// 		precipitation
+	// 		moisture
+	// 		wind
+	// 		temperature
+	// 		temp_average
+	// 	}
+	// 	landmass -> mountain, height;
+	// 	coriolis -> wind;
+	// 	mountain -> height;
+	// 	height -> temperature, moisture, precipitation, biome, wind;
+	// 	wind -> precipitation, temperature;
+	// 	temperature -> temp_average, biome, precipitation, moisture;
+	// 	moisture -> biome;
+	// 	precipitation -> moisture;
+	// 	temp_average -> wind;
+	// }
+	
 	public static void main(String[] args) throws IOException {
 		// Create a large map
 		WorldMap<PlaneSampler> worldMap = new WorldMap<>(new PlaneSampler(10000, 10000));
 		// Sample 1000 points
-		WorldMap<PlaneSampler> sampledWorldMap = new WorldMap<>(worldMap.getSampler().sample(1000, 1000));
+		WorldMap<PlaneSampler> sampledWorldMap = new WorldMap<>(worldMap.getSampler().sample(500, 500));
 		/// Take the botom right quad
 		// WorldMap<PlaneSampler> sampledWorldMap = new
 		/// WorldMap<>(childSampledWorldMap.getSampler().sample(500, 500, 500, 500));
@@ -30,6 +50,7 @@ public class Main {
 		long writingStart = System.nanoTime();
 
 		writeMapDataToPng(width, height, resultMap.get("landmass"), ColorMaps.GREY_SCALE, "maps/landmass.png");
+		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.GREY_SCALE_VELOCITY, "maps/coriolis_grey.png");
 		writeMapDataToPng(width, height, resultMap.get("coriolis"), ColorMaps.VELOCITY_TO_HSL, "maps/coriolis.png");
 		writeMapDataToPng(width, height, resultMap.get("mountain"), ColorMaps.GREY_SCALE, "maps/mountain.png");
 		writeMapDataToPng(width, height, resultMap.get("height"), ColorMaps.HEIGHT_MAP, "maps/height.png");

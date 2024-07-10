@@ -1,8 +1,8 @@
 package me.alexng.worldGen.pipeline.pipes;
 
-import org.joml.Math;
 import org.joml.Vector2f;
 
+import me.alexng.worldGen.NoiseHelper;
 import me.alexng.worldGen.pipeline.PipeWorker;
 import me.alexng.worldGen.pipeline.Producer;
 import me.alexng.worldGen.pipeline.pipes.dto.Velocity;
@@ -20,7 +20,7 @@ public class CoriolisPipeWorder implements PipeWorker {
     @Override
     public void setup(int seed, Sampler sampler) {
         totalHeight = getTotalHeight(sampler);
-        bandWidth = totalHeight / NUM_BANDS;
+        bandWidth = (int) (totalHeight / (float) NUM_BANDS);
     }
 
     @Producer(name = "coriolis", stored = true)
@@ -30,29 +30,33 @@ public class CoriolisPipeWorder implements PipeWorker {
         Vector2f direction;
         switch (bandIndex) {
             case 0:
-                direction = new Vector2f(-1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
-                // output = new Vector2f(1.0f, 0.0f);
+                direction = new Vector2f(-1.0f, 1.0f).mul(d, 1 - d).normalize();
+                if (((PlanePoint) point).getX() == 0) {
+                    // System.out.println(1 - d);
+                    System.out.println("A: " + Math.tanh(direction.x / direction.y));
+                    System.out.println("B: " + NoiseHelper.normalize((float) Math.tanh(direction.x / direction.y)));
+                    // System.out.println(direction);
+                }
                 break;
             case 1:
-                // output = new Vector2f(-1.0f, 0.0f);
-                direction = new Vector2f(1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
+                direction = new Vector2f(1.0f, -1.0f).mul(1 - d, d).normalize();
                 break;
             case 2:
-                // output = new Vector2f(0.0f, 1.0f);
-                direction = new Vector2f(-1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
+                direction = new Vector2f(-1.0f, 1.0f).mul(d, 1 - d).normalize();
                 break;
             case 3:
-                // output = new Vector2f(0.0f, -1.0f);
-                direction = new Vector2f(-1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
+                direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d).normalize();
                 break;
             case 4:
-                direction = new Vector2f(1.0f, 0.0f).mul(d).add(new Vector2f(0.0f, 1.0f).mul(1 - d)).normalize();
+                direction = new Vector2f(1.0f, 1.0f).mul(d, 1 - d).normalize();
                 break;
             case 5:
-                direction = new Vector2f(-1.0f, 0.0f).mul(1 - d).add(new Vector2f(0.0f, -1.0f).mul(d)).normalize();
+                direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d).normalize();
+                System.exit(0);
                 break;
             default:
-                throw new RuntimeException("Invalid band");
+                throw new RuntimeException(
+                        "Invalid band: " + bandIndex + ":" + getY(point) + ":" + totalHeight + ":" + bandWidth);
         }
         float m = (float) Math.abs(Math.sin((getY(point) / (double) totalHeight - 0.5) * Math.PI));
         return new Velocity(m, direction);

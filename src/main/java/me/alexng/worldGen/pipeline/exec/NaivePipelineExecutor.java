@@ -45,7 +45,7 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 	}
 
 	private Object[] runNode(Node node, int iteration_index, Sampler sampler, Map<String, Object[]> resultMap) {
-		System.out.println(node.producer.name());
+		long start = System.currentTimeMillis();
 		Iterator<Point> pointIterator = sampler.getPoints();
 		Object[] result = (Object[]) Array.newInstance(node.method.getReturnType(), sampler.getSize());
 		Object[] parameters = new Object[node.consumes.length + 1 + (node.producer.iterated() ? 1 : 0)];
@@ -83,6 +83,7 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 				throw new RuntimeException(e);
 			}
 		}
+		System.out.println(node.producer.name() + " (" + (System.currentTimeMillis() - start) / 1000f + "s)");
 		return result;
 	}
 }

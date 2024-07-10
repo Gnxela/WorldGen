@@ -11,9 +11,12 @@ import me.alexng.worldGen.pipeline.pipes.dto.Velocity;
 public class ColorMaps {
 
 	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(toFloat(data)));
+	public static final ColorMap GREY_SCALE_VELOCITY = data -> new Vector3f(
+			255 * NoiseHelper.normalize(
+					(float) Math.tanh(((Velocity) data).direction.y / (((Velocity) data).direction.x))));
 	public static final ColorMap VELOCITY_TO_HSL = data -> hslColor(
 			NoiseHelper.normalize(
-					(float) Math.tanh(((Velocity) data).direction.y / ((Velocity) data).direction.x)),
+					(float) Math.tanh(((Velocity) data).direction.y / (((Velocity) data).direction.x + 1e-6f))),
 			0.5f,
 			// 0.5f);
 			((Velocity) data).magnitude);
