@@ -20,9 +20,6 @@ public class PlaneSampler implements Sampler {
 		this.numPointsY = numPointsY;
 		this.totalWidth = totalWidth;
 		this.totalHeight = totalHeight;
-		System.out.println(
-				"x: " + x + " y: " + y + " width: " + width + " height: " + height + " numPointsX: " + numPointsX
-						+ " numPointsY: " + numPointsY + " totalWidth: " + totalWidth + " totalHeight: " + totalHeight);
 	}
 
 	public PlaneSampler(int width, int height) {

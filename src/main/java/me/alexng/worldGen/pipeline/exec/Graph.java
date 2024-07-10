@@ -8,6 +8,8 @@ import me.alexng.worldGen.sampler.Point;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 /**
  * A class that represents a pipelines DAG.
@@ -42,22 +44,51 @@ public class Graph {
 		while (nodes.size() > 0) { // O(n)
 			int foundIndex = findResolvedNode(nodes, unresolvedConsumes); // O(n)
 			if (foundIndex == -1) {
-				for (Node n : unresolvedConsumes.keySet()) {
-					if (!unresolvedConsumes.get(n).isEmpty()) {
-						System.out.println(n.producer.name());
-					}
-				}
 				throw new RuntimeException("Unable to resolve dependency graph");
 			}
 			Node resolvedNode = nodes.remove(foundIndex);
 			if (resolvedNode.consumes.length == 0) {
 				origins.add(resolvedNode);
-				System.out.println("Origin:");
 			}
 			resolveConsumers(nodes, resolvedNode, unresolvedConsumes); // O(n)
 		}
+		printGraphviz(origins);
 		// TODO: We need to validate the graph here. Ensure it is a DAG, no duplicate
 		// names, remove not-generation leaves, etc.
+	}
+
+	private void printGraphviz(List<Node> origins) {
+		System.out.println("digraph G {");
+		Set<Node> enqueuedNodes = new HashSet<Node>();
+		Queue<Node> queue = new LinkedBlockingQueue<>();
+		for (Node node : origins) {
+			queue.offer(node);
+			enqueuedNodes.add(node);
+		}
+		while (!queue.isEmpty()) {
+			{
+				Node n = queue.poll();
+				if (!n.dependants.isEmpty() || n.producer.iterated()) {
+					System.out.print(n.producer.name() + " -> ");
+					if (n.producer.iterated()) {
+						System.err.print(n.producer.name());
+						if (!n.dependants.isEmpty()) {
+							System.err.print(", ");
+						}
+					}
+					System.out.print(
+							n.dependants.stream().map(node -> node.producer.name()).collect(Collectors.joining(", ")));
+					System.out.println(";");
+				}
+				for (Node child : n.dependants) {
+					if (!enqueuedNodes.contains(child)) {
+						queue.offer(child);
+						enqueuedNodes.add(child);
+					}
+				}
+			}
+		}
+		System.out.println("}");
 	}
 
 	private void createNodes(List<Node> nodes, PipeWorker worker) {
