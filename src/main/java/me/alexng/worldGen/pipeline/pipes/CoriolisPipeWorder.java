@@ -33,8 +33,8 @@ public class CoriolisPipeWorder implements PipeWorker {
                 direction = new Vector2f(-1.0f, 1.0f).mul(d, 1 - d).normalize();
                 if (((PlanePoint) point).getX() == 0) {
                     // System.out.println(1 - d);
-                    System.out.println("A: " + Math.tanh(direction.x / direction.y));
-                    System.out.println("B: " + NoiseHelper.normalize((float) Math.tanh(direction.x / direction.y)));
+                    // System.out.println("A: " + Math.tanh(direction.y / direction.x));
+                    // System.out.println("B: " + NoiseHelper.normalize((float) Math.tanh(direction.y / direction.x)));
                     // System.out.println(direction);
                 }
                 break;
@@ -52,7 +52,6 @@ public class CoriolisPipeWorder implements PipeWorker {
                 break;
             case 5:
                 direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d).normalize();
-                System.exit(0);
                 break;
             default:
                 throw new RuntimeException(

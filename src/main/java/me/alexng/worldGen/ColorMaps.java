@@ -1,5 +1,6 @@
 package me.alexng.worldGen;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import me.alexng.worldGen.pipeline.pipes.dto.Velocity;
@@ -11,16 +12,21 @@ import me.alexng.worldGen.pipeline.pipes.dto.Velocity;
 public class ColorMaps {
 
 	public static final ColorMap GREY_SCALE = data -> new Vector3f(255 * NoiseHelper.normalize(toFloat(data)));
-	public static final ColorMap GREY_SCALE_VELOCITY = data -> new Vector3f(
-			255 * NoiseHelper.normalize(
-					(float) Math.tanh(((Velocity) data).direction.y / (((Velocity) data).direction.x))));
+	public static final ColorMap GREY_SCALE_VELOCITY = data -> new Vector3f(255 * toFloat(((Velocity) data).direction));
 	public static final ColorMap VELOCITY_TO_HSL = data -> hslColor(
-			NoiseHelper.normalize(
-					(float) Math.tanh(((Velocity) data).direction.y / (((Velocity) data).direction.x + 1e-6f))),
+			toFloat(((Velocity) data).direction),
 			0.5f,
 			// 0.5f);
 			((Velocity) data).magnitude);
 	public static final ColorMap HSL_SCALE = data -> hslColor(NoiseHelper.normalize(toFloat(data)), 0.5f, 0.5f);
+
+	private static float toFloat(Vector2f v) {
+		float x = (float) Math.atan2(v.y, v.x);
+		if (x < 0) {
+			x += Math.PI / 2f;
+		}
+		return x / (float) Math.PI / 2f;
+	}
 
 	static public Vector3f hslColor(float h, float s, float l) {
 		float q, p, r, g, b;

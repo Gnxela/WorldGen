@@ -55,6 +55,8 @@ public class Main {
 		writeMapDataToPng(width, height, resultMap.get("mountain"), ColorMaps.GREY_SCALE, "maps/mountain.png");
 		writeMapDataToPng(width, height, resultMap.get("height"), ColorMaps.HEIGHT_MAP, "maps/height.png");
 		writeMapDataToPng(width, height, resultMap.get("temperature"), ColorMaps.TEMPERATURE_MAP, "maps/temperature.png");
+		writeMapDataToPng(width, height, resultMap.get("temp_average"), ColorMaps.TEMPERATURE_MAP, "maps/temperature_average.png");
+		writeMapDataToPng(width, height, resultMap.get("pressure"), ColorMaps.VELOCITY_TO_HSL, "maps/pressure.png");
 		writeMapDataToPng(width, height, resultMap.get("moisture"), ColorMaps.MOISTURE_MAP, "maps/moisture.png");
 		writeMapDataToPng(width, height, resultMap.get("precipitation"), ColorMaps.GREY_SCALE, "maps/precipitation.png");
 		writeMapDataToPng(width, height, resultMap.get("biome"), ColorMaps.BIOME_MAP, "maps/biome.png");
