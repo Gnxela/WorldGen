@@ -41,8 +41,7 @@ public class WindPipeWorder implements PipeWorker {
         } else {
             wind = windArray[point.getIndex()];
         }
-        float coriolisStrength = 0.01f;
-        // float pressureStrength = pressure.magnitude;
+        float coriolisStrength = 0.005f * coriolis.magnitude;
         float pressureStrength = pressure.magnitude;
         wind.direction.x -= pressure.direction.x * pressureStrength;
         wind.direction.y -= pressure.direction.y * pressureStrength;
@@ -62,9 +61,9 @@ public class WindPipeWorder implements PipeWorker {
         Vector2f total = new Vector2f();
         Vector2f totalWeight = new Vector2f();
         int num = 0;
+        float lTemp = NoiseHelper.normalize(temperature[point.getIndex()]);
         int lx = point.getIndex() % sampleWidth;
         int ly = point.getIndex() / sampleWidth;
-        float lTemp = NoiseHelper.normalize(avg_temperature[ly * sampleWidth + lx]);
         for (int dx = 0; dx < SAMPLE_WIDTH; dx++) {
             int nx = lx + dx - SAMPLE_WIDTH / 2;
             if (nx < 0 || nx >= sampleWidth) {
@@ -93,7 +92,7 @@ public class WindPipeWorder implements PipeWorker {
                 // totalWeight.add(weight);
             }
         }
-        return new Velocity(Math.abs(lTemp - avg_temperature[point.getIndex()]), total.div(num));
+        return new Velocity(Math.abs(lTemp - NoiseHelper.normalize(avg_temperature[point.getIndex()])) * 10f, total.div(num));
     }
 
     @Producer(name = "temp_average", stored = true)

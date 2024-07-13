@@ -16,8 +16,8 @@ public class ColorMaps {
 	public static final ColorMap VELOCITY_TO_HSL = data -> hslColor(
 			toFloat(((Velocity) data).direction),
 			0.5f,
-			0.5f);
-			// ((Velocity) data).magnitude);
+			// 0.5f);
+			((Velocity) data).magnitude);
 	public static final ColorMap HSL_SCALE = data -> hslColor(NoiseHelper.normalize(toFloat(data)), 0.5f, 0.5f);
 
 	private static float toFloat(Vector2f v) {
