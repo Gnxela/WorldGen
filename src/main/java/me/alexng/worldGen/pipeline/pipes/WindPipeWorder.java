@@ -40,8 +40,7 @@ public class WindPipeWorder implements PipeWorker {
         int x = point.getIndex() % sampleWidth;
         int y = point.getIndex() / sampleWidth;
         if (iteration_index == 0) {
-            wind = new Velocity(0, new Vector2f(random.nextFloat(), random.nextFloat()).mul(0.01f));
-            return new Velocity(0.5f, wind.direction);
+            return new Velocity(0.5f, pressure[point.getIndex()].direction);
         } else {
             wind = windArray[point.getIndex()];
         }
@@ -54,16 +53,16 @@ public class WindPipeWorder implements PipeWorker {
                 }
                 Velocity p = pressure[ly * sampleWidth + lx];
                 float pressureStrength = p.magnitude;
-                int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f) / 1
+                int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f + 0.5f)
                         / 8f);
-                int pressureDirection = (int) (Main.shiftAngle(Main.vectorToAngle(p.direction), -1 / 16f) / 1 / 8f);
+                int pressureDirection = (int) (Main.shiftAngle(Main.vectorToAngle(p.direction), -1 / 16f) / 8f);
                 if (originDirection == pressureDirection) {
                     wind.direction.x += p.direction.x * pressureStrength;
                     wind.direction.y += p.direction.y * pressureStrength;
                 }
             }
         }
-        float coriolisStrength = 0.002f * coriolis.magnitude;
+        float coriolisStrength = 0.01f * coriolis.magnitude;
         wind.direction.x += coriolis.direction.x * coriolisStrength;
         wind.direction.y += coriolis.direction.y * coriolisStrength;
         // Vector2f v = wind.direction.normalize(new Vector2f()).mul(1 -
@@ -98,9 +97,9 @@ public class WindPipeWorder implements PipeWorker {
                     continue;
                 }
 
-                Vector2f weight = new Vector2f(NoiseHelper.normalize(avg_temperature[ny * sampleWidth + nx]) - lTemp);
+                Vector2f weight = new Vector2f(lTemp - NoiseHelper.normalize(avg_temperature[ny * sampleWidth + nx]));
                 total.add(
-                        new Vector2f(nx - lx, ny - ly).normalize().mul(weight));
+                        new Vector2f(lx - nx, ly - ny).normalize().mul(weight));
                 totalWeight.add(weight);
                 num++;
 
