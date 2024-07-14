@@ -5,6 +5,7 @@ import java.util.Random;
 import org.joml.Math;
 import org.joml.Vector2f;
 
+import me.alexng.worldGen.Main;
 import me.alexng.worldGen.NoiseHelper;
 import me.alexng.worldGen.Nullable;
 import me.alexng.worldGen.pipeline.Consume;
@@ -32,19 +33,37 @@ public class WindPipeWorder implements PipeWorker {
             PlanePoint point,
             int iteration_index,
             @Nullable @Consume(name = "wind", blocked = true) Velocity[] windArray,
-            @Consume(name = "pressure") Velocity pressure,
+            @Consume(name = "pressure", blocked = true) Velocity[] pressure,
             @Consume(name = "coriolis") Velocity coriolis) {
         // TODO: Temperature map needs to be processed into pressure vector
         Velocity wind;
+        int x = point.getIndex() % sampleWidth;
+        int y = point.getIndex() / sampleWidth;
         if (iteration_index == 0) {
             wind = new Velocity(0, new Vector2f(random.nextFloat(), random.nextFloat()).mul(0.01f));
+            return new Velocity(0.5f, wind.direction);
         } else {
             wind = windArray[point.getIndex()];
         }
-        float coriolisStrength = 0.005f * coriolis.magnitude;
-        float pressureStrength = pressure.magnitude;
-        wind.direction.x -= pressure.direction.x * pressureStrength;
-        wind.direction.y -= pressure.direction.y * pressureStrength;
+        for (int i = -1; i < 1; i++) {
+            for (int j = -1; j < 1; j++) {
+                int lx = x + i;
+                int ly = y + j;
+                if (lx < 0 || lx > sampleWidth || ly < 0 || ly > sampleHeight) {
+                    continue;
+                }
+                Velocity p = pressure[ly * sampleWidth + lx];
+                float pressureStrength = p.magnitude;
+                int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f) / 1
+                        / 8f);
+                int pressureDirection = (int) (Main.shiftAngle(Main.vectorToAngle(p.direction), -1 / 16f) / 1 / 8f);
+                if (originDirection == pressureDirection) {
+                    wind.direction.x += p.direction.x * pressureStrength;
+                    wind.direction.y += p.direction.y * pressureStrength;
+                }
+            }
+        }
+        float coriolisStrength = 0.002f * coriolis.magnitude;
         wind.direction.x += coriolis.direction.x * coriolisStrength;
         wind.direction.y += coriolis.direction.y * coriolisStrength;
         // Vector2f v = wind.direction.normalize(new Vector2f()).mul(1 -
@@ -92,7 +111,8 @@ public class WindPipeWorder implements PipeWorker {
                 // totalWeight.add(weight);
             }
         }
-        return new Velocity(Math.abs(lTemp - NoiseHelper.normalize(avg_temperature[point.getIndex()])) * 10f, total.div(num));
+        return new Velocity(Math.abs(lTemp - NoiseHelper.normalize(avg_temperature[point.getIndex()])) * 10f,
+                total.div(num));
     }
 
     @Producer(name = "temp_average", stored = true)

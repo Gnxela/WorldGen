@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.joml.Vector2f;
+
 import me.alexng.worldGen.sampler.PlaneSampler;
 
 public class Main {
@@ -80,5 +82,23 @@ public class Main {
 		BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		bufferedImage.getGraphics().drawImage(image, 0, 0, null);
 		ImageIO.write(bufferedImage, "png", new File(outputPath));
+	}
+
+	// Returns a float between 0 and 1
+	public static float vectorToAngle(Vector2f v) {
+		float x = (float) Math.atan2(v.y, v.x);
+		// if (x < 0) {
+		// x += Math.PI;
+		// }
+		return (x + (float) Math.PI) / (float) Math.PI / 2f;
+	}
+
+	public static float shiftAngle(float a, float s) {
+		if (a + s < 0) {
+			return a + 1;
+		} else if (a + s > 1) {
+			return a - 1;
+		}
+		return a + s;
 	}
 }
