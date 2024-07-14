@@ -1,7 +1,10 @@
 package me.alexng.worldGen.pipeline.exec;
 
+import me.alexng.worldGen.ColorMaps;
+import me.alexng.worldGen.Main;
 import me.alexng.worldGen.pipeline.Consume;
 import me.alexng.worldGen.pipeline.Pipeline;
+import me.alexng.worldGen.sampler.PlaneSampler;
 import me.alexng.worldGen.sampler.Point;
 import me.alexng.worldGen.sampler.Sampler;
 
@@ -30,6 +33,16 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 			for (int i = 0; i < node.producer.iterations(); i++) {
 				result = runNode(node, i, sampler, resultMap);
 				resultMap.put(node.producer.name(), result);
+				if (node.producer.name().equals("wind")) {
+					int width = ((PlaneSampler) sampler).getNumPointsX();
+					int height = ((PlaneSampler) sampler).getNumPointsY();
+					try {
+						Main.writeMapDataToPng(width, height, result, ColorMaps.VELOCITY_TO_HSL,
+								"maps/" + node.producer.name() + "_" + i + ".png");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 			if (node.producer.stored()) {
 				finalResultMap.put(node.producer.name(), result);

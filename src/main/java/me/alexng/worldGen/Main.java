@@ -73,7 +73,7 @@ public class Main {
 		System.out.println("Writing: " + (System.nanoTime() - writingStart) / 1000000000f + "s");
 	}
 
-	private static void writeMapDataToPng(int width, int height, Object[] rawData, ColorMaps.ColorMap colorMap,
+	public static void writeMapDataToPng(int width, int height, Object[] rawData, ColorMaps.ColorMap colorMap,
 			String outputPath) throws IOException {
 		MemoryImageSource imageSource = new MemoryImageSource(width, height, colorMap.packToPixels(rawData), 0, width);
 		Image image = Toolkit.getDefaultToolkit().createImage(imageSource);
