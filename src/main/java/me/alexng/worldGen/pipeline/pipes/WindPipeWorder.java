@@ -33,6 +33,7 @@ public class WindPipeWorder implements PipeWorker {
             PlanePoint point,
             int iteration_index,
             @Nullable @Consume(name = "wind", blocked = true) Velocity[] windArray,
+            @Nullable @Consume(name = "height", blocked = true) Float[] height,
             @Consume(name = "pressure", blocked = true) Velocity[] pressure,
             @Consume(name = "coriolis") Velocity coriolis) {
         // TODO: Temperature map needs to be processed into pressure vector
@@ -44,6 +45,7 @@ public class WindPipeWorder implements PipeWorker {
         } else {
             wind = windArray[point.getIndex()];
         }
+        float localHeight = NoiseHelper.normalize(Math.max(0, height[point.getIndex()]));
         for (int i = -1; i < 1; i++) {
             for (int j = -1; j < 1; j++) {
                 int lx = x + i;
@@ -51,12 +53,12 @@ public class WindPipeWorder implements PipeWorker {
                 if (lx < 0 || lx > sampleWidth || ly < 0 || ly > sampleHeight) {
                     continue;
                 }
-                Velocity p = pressure[ly * sampleWidth + lx];
-                float pressureStrength = p.magnitude;
-                int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f + 0.5f)
-                        / 8f);
+                int index = ly * sampleWidth + lx;
+                Velocity p = pressure[index];
+                int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f + 0.5f) / 8f);
                 int pressureDirection = (int) (Main.shiftAngle(Main.vectorToAngle(p.direction), -1 / 16f) / 8f);
                 if (originDirection == pressureDirection) {
+                    float pressureStrength = p.magnitude;
                     wind.direction.x += p.direction.x * pressureStrength;
                     wind.direction.y += p.direction.y * pressureStrength;
                 }
@@ -69,7 +71,7 @@ public class WindPipeWorder implements PipeWorker {
         // coriolisStrength)
         // .add(coriolis.direction.normalize(new
         // Vector2f()).mul(coriolisStrength)).normalize();
-        return new Velocity(0.5f, wind.direction);
+        return new Velocity(0.5f, wind.direction.normalize());
     }
 
     @Producer(name = "pressure", stored = true)
