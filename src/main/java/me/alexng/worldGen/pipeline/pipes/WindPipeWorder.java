@@ -75,7 +75,7 @@ public class WindPipeWorder implements PipeWorker {
     @Producer(name = "pressure", stored = true)
     public Velocity pressure(PlanePoint point, @Consume(name = "temperature", blocked = true) Float[] temperature,
             @Consume(name = "temp_average", blocked = true) Float[] avg_temperature) {
-        final int SAMPLE_WIDTH = 20;
+        final int SAMPLE_WIDTH = 5;
         Vector2f total = new Vector2f();
         Vector2f totalWeight = new Vector2f();
         int num = 0;
@@ -98,8 +98,7 @@ public class WindPipeWorder implements PipeWorker {
                 }
 
                 Vector2f weight = new Vector2f(lTemp - NoiseHelper.normalize(avg_temperature[ny * sampleWidth + nx]));
-                total.add(
-                        new Vector2f(lx - nx, ly - ny).normalize().mul(weight));
+                total.add(new Vector2f(lx - nx, ly - ny).normalize().mul(weight));
                 totalWeight.add(weight);
                 num++;
 
