@@ -58,7 +58,7 @@ public class WindPipeWorder implements PipeWorker {
                 int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f + 0.5f) / 8f);
                 int pressureDirection = (int) (Main.shiftAngle(Main.vectorToAngle(p.direction), -1 / 16f) / 8f);
                 if (originDirection == pressureDirection) {
-                    // 0.5 as I'm using max(0, height)
+                    // Ranges between -0.5 (0.5 - 1) and 0.5 (1 - 0.5)
                     float heightScalar = (NoiseHelper.normalize(Math.max(0, height[index])) - localHeight);
                     float pressureStrength = p.magnitude + heightScalar;
                     wind.direction.x += p.direction.x * pressureStrength;
