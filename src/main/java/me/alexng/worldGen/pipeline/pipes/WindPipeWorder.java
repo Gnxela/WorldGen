@@ -66,7 +66,7 @@ public class WindPipeWorder implements PipeWorker {
                 }
             }
         }
-        float coriolisStrength = 0.01f * coriolis.magnitude;
+        float coriolisStrength = 0.02f * coriolis.magnitude;
         wind.direction.x += coriolis.direction.x * coriolisStrength;
         wind.direction.y += coriolis.direction.y * coriolisStrength;
         // Vector2f v = wind.direction.normalize(new Vector2f()).mul(1 -
