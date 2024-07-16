@@ -31,34 +31,28 @@ public class CoriolisPipeWorder implements PipeWorker {
         switch (bandIndex) {
             case 0:
                 direction = new Vector2f(-1.0f, 1.0f).mul(d, 1 - d).normalize();
-                if (((PlanePoint) point).getX() == 0) {
-                    // System.out.println(1 - d);
-                    // System.out.println("A: " + Math.tanh(direction.y / direction.x));
-                    // System.out.println("B: " + NoiseHelper.normalize((float) Math.tanh(direction.y / direction.x)));
-                    // System.out.println(direction);
-                }
                 break;
             case 1:
-                direction = new Vector2f(1.0f, -1.0f).mul(1 - d, d).normalize();
+                direction = new Vector2f(1.0f, -1.0f).mul(1 - d, d);
                 break;
             case 2:
-                direction = new Vector2f(-1.0f, 1.0f).mul(d, 1 - d).normalize();
+                direction = new Vector2f(-1.0f, 1.0f).mul(d, 1 - d);
                 break;
             case 3:
-                direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d).normalize();
+                direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d);
                 break;
             case 4:
-                direction = new Vector2f(1.0f, 1.0f).mul(d, 1 - d).normalize();
+                direction = new Vector2f(1.0f, 1.0f).mul(d, 1 - d);
                 break;
             case 5:
-                direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d).normalize();
+                direction = new Vector2f(-1.0f, -1.0f).mul(1 - d, d);
                 break;
             default:
                 throw new RuntimeException(
                         "Invalid band: " + bandIndex + ":" + getY(point) + ":" + totalHeight + ":" + bandWidth);
         }
         float m = (float) Math.abs(Math.sin((getY(point) / (double) totalHeight - 0.5) * Math.PI));
-        return new Velocity(m, direction);
+        return new Velocity(m, direction.normalize());
     }
 
     private int getTotalHeight(Sampler sampler) {

@@ -33,47 +33,55 @@ public class WindPipeWorder implements PipeWorker {
             PlanePoint point,
             int iteration_index,
             @Nullable @Consume(name = "wind", blocked = true) Velocity[] windArray,
-            @Nullable @Consume(name = "height", blocked = true) Float[] height,
-            @Consume(name = "pressure", blocked = true) Velocity[] pressure,
+            @Nullable @Consume(name = "height", blocked = true) Float[] heightArray,
+            @Consume(name = "pressure", blocked = true) Velocity[] pressureArray,
             @Consume(name = "coriolis") Velocity coriolis) {
         // TODO: Temperature map needs to be processed into pressure vector
         Velocity wind;
         int x = point.getIndex() % sampleWidth;
         int y = point.getIndex() / sampleWidth;
+        Velocity pressure = pressureArray[point.getIndex()];
         if (iteration_index == 0) {
-            return new Velocity(0.5f, pressure[point.getIndex()].direction);
+            wind = new Velocity(0.5f, pressure.direction);
         } else {
             wind = windArray[point.getIndex()];
         }
-        float localHeight = NoiseHelper.normalize(Math.max(0, height[point.getIndex()]));
-        for (int i = -1; i < 1; i++) {
-            for (int j = -1; j < 1; j++) {
-                int lx = x + i;
-                int ly = y + j;
-                if (lx < 0 || lx > sampleWidth || ly < 0 || ly > sampleHeight) {
-                    continue;
-                }
-                int index = ly * sampleWidth + lx;
-                Velocity p = pressure[index];
-                int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)), -1 / 16f + 0.5f) / 8f);
-                int pressureDirection = (int) (Main.shiftAngle(Main.vectorToAngle(p.direction), -1 / 16f) / 8f);
-                if (originDirection == pressureDirection) {
-                    // Ranges between -0.5 (0.5 - 1) and 0.5 (1 - 0.5)
-                    float heightScalar = (NoiseHelper.normalize(Math.max(0, height[index])) - localHeight);
-                    float pressureStrength = p.magnitude + heightScalar;
-                    wind.direction.x += p.direction.x * pressureStrength;
-                    wind.direction.y += p.direction.y * pressureStrength;
+        Vector2f outputDirection = new Vector2f(wind.direction);
+        if (iteration_index > 0) {
+            float height = NoiseHelper.normalize(Math.max(0, heightArray[point.getIndex()]));
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    int lx = x + i;
+                    int ly = y + j;
+                    if (lx < 0 || lx >= sampleWidth || ly < 0 || ly >= sampleHeight) {
+                        continue;
+                    }
+                    int index = ly * sampleWidth + lx;
+                    Velocity w = windArray[index];
+                    int originDirection = (int) (Main.shiftAngle(Main.vectorToAngle(new Vector2f(i, j)),
+                            -1 / 16f + 0.5f)
+                            / 8f);
+                    int windDirection = (int) (Main.shiftAngle(Main.vectorToAngle(w.direction), -1 / 16f) / 8f);
+                    if (originDirection == windDirection) {
+                        float heightScalar = (NoiseHelper.normalize(Math.max(0, heightArray[index])) - height) * 2;
+                        float pressureStrength = 1f;//heightScalar; // + w.magnitude
+                        outputDirection.x += w.direction.x * pressureStrength;
+                        outputDirection.y += w.direction.y * pressureStrength;
+                    }
                 }
             }
         }
-        float coriolisStrength = 0.02f * coriolis.magnitude;
-        wind.direction.x += coriolis.direction.x * coriolisStrength;
-        wind.direction.y += coriolis.direction.y * coriolisStrength;
+        float pressureStrength = 1f * pressure.magnitude;
+        outputDirection.x += pressure.direction.x * pressureStrength;
+        outputDirection.y += pressure.direction.y * pressureStrength;
+        float coriolisStrength = 1f; //0.5f * coriolis.magnitude;
+        outputDirection.x += coriolis.direction.x * coriolisStrength;
+        outputDirection.y += coriolis.direction.y * coriolisStrength;
         // Vector2f v = wind.direction.normalize(new Vector2f()).mul(1 -
         // coriolisStrength)
         // .add(coriolis.direction.normalize(new
         // Vector2f()).mul(coriolisStrength)).normalize();
-        return new Velocity(0.5f, wind.direction.normalize());
+        return new Velocity(wind.magnitude, outputDirection.normalize());
     }
 
     @Producer(name = "pressure", stored = true)
@@ -113,8 +121,8 @@ public class WindPipeWorder implements PipeWorker {
                 // totalWeight.add(weight);
             }
         }
-        return new Velocity(Math.abs(lTemp - NoiseHelper.normalize(avg_temperature[point.getIndex()])) * 10f,
-                total.div(num));
+        return new Velocity(Math.abs(lTemp - NoiseHelper.normalize(avg_temperature[point.getIndex()]) * 3f),
+                total.div(num).normalize());
     }
 
     @Producer(name = "temp_average", stored = true)
