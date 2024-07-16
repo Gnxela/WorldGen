@@ -62,33 +62,45 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 		Iterator<Point> pointIterator = sampler.getPoints();
 		Object[] result = (Object[]) Array.newInstance(node.method.getReturnType(), sampler.getSize());
 		Object[] parameters = new Object[node.consumes.length + 1 + (node.producer.iterated() ? 1 : 0)];
-		while (pointIterator.hasNext()) {
-			Point point = pointIterator.next();
-			int writeIndex = 0;
-			int readIndex = 0;
-			parameters[writeIndex++] = point;
-			if (node.producer.iterated()) {
-				parameters[writeIndex++] = iteration_index;
-			}
-			for (; writeIndex < parameters.length; writeIndex++) {
-				// TODO: We shouldn't read from the map for every point. But this works for now.
-				Consume consumer = node.consumes[readIndex++];
-				Object[] r = resultMap.get(consumer.name());
-				if (r == null && node.producer.iterated() && node.producer.name().equals(consumer.name())) {
-					if (consumer.blocked()) {
-						parameters[writeIndex] = (Object[]) Array.newInstance(node.method.getReturnType(), 0);
-					} else {
-						parameters[writeIndex] = 0f;
-					}
+		int writeIndex = 0;
+		int readIndex = 0;
+		LinkedList<UpdatableParameter> updatableParameters = new LinkedList<>();
+		updatableParameters.add(new UpdatableParameter(writeIndex++, null));
+		if (node.producer.iterated()) {
+			parameters[writeIndex++] = iteration_index;
+		}
+		for (; writeIndex < parameters.length; writeIndex++) {
+			// TODO: We shouldn't read from the map for every point. But this works for now.
+			Consume consumer = node.consumes[readIndex++];
+			Object[] r = resultMap.get(consumer.name());
+			if (r == null && node.producer.iterated() && node.producer.name().equals(consumer.name())) {
+				if (consumer.blocked()) {
+					parameters[writeIndex] = (Object[]) Array.newInstance(node.method.getReturnType(), 0);
 				} else {
-					if (consumer.blocked()) {
-						parameters[writeIndex] = r;
-					} else {
-						parameters[writeIndex] = r[point.getIndex()];
-					}
+					updatableParameters.add(new UpdatableParameter(writeIndex, consumer));
+				}
+			} else {
+				if (consumer.blocked()) {
+					parameters[writeIndex] = r;
+				} else {
+					updatableParameters.add(new UpdatableParameter(writeIndex, consumer));
 				}
 			}
-
+		}
+		while (pointIterator.hasNext()) {
+			Point point = pointIterator.next();
+			for (UpdatableParameter parameter : updatableParameters) {
+				if (parameter.index == 0) {
+					parameters[parameter.index] = point;
+					continue;
+				}
+				Object[] r = resultMap.get(parameter.consumer.name());
+				if (r != null) {
+					parameters[parameter.index] = r[point.getIndex()];
+				} else {
+					parameters[parameter.index] = 0f;
+				}
+			}
 			try {
 				result[point.getIndex()] = node.method.invoke(node.worker, parameters);
 			} catch (IllegalAccessException | InvocationTargetException e) {
@@ -98,5 +110,15 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 		}
 		System.out.println(node.producer.name() + " (" + (System.currentTimeMillis() - start) / 1000f + "s)");
 		return result;
+	}
+
+	private static class UpdatableParameter{
+		public int index;
+		public Consume consumer;
+
+		public UpdatableParameter(int index, Consume consumer) {
+			this.index = index;
+			this.consumer = consumer;
+		}
 	}
 }
