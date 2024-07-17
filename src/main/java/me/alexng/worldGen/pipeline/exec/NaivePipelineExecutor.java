@@ -65,26 +65,22 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 		int writeIndex = 0;
 		int readIndex = 0;
 		LinkedList<UpdatableParameter> updatableParameters = new LinkedList<>();
-		updatableParameters.add(new UpdatableParameter(writeIndex++, null));
+		updatableParameters.add(new UpdatableParameter(writeIndex++, null, null));
 		if (node.producer.iterated()) {
 			parameters[writeIndex++] = iteration_index;
 		}
 		for (; writeIndex < parameters.length; writeIndex++) {
-			// TODO: We shouldn't read from the map for every point. But this works for now.
 			Consume consumer = node.consumes[readIndex++];
 			Object[] r = resultMap.get(consumer.name());
-			if (r == null && node.producer.iterated() && node.producer.name().equals(consumer.name())) {
-				if (consumer.blocked()) {
+			if (consumer.blocked()) {
+				if (iteration_index == 0 && r == null && node.producer.iterated()
+						&& node.producer.name().equals(consumer.name())) {
 					parameters[writeIndex] = (Object[]) Array.newInstance(node.method.getReturnType(), 0);
 				} else {
-					updatableParameters.add(new UpdatableParameter(writeIndex, consumer));
+					parameters[writeIndex] = r;
 				}
 			} else {
-				if (consumer.blocked()) {
-					parameters[writeIndex] = r;
-				} else {
-					updatableParameters.add(new UpdatableParameter(writeIndex, consumer));
-				}
+				updatableParameters.add(new UpdatableParameter(writeIndex, consumer, r));
 			}
 		}
 		while (pointIterator.hasNext()) {
@@ -94,9 +90,8 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 					parameters[parameter.index] = point;
 					continue;
 				}
-				Object[] r = resultMap.get(parameter.consumer.name());
-				if (r != null) {
-					parameters[parameter.index] = r[point.getIndex()];
+				if (parameter.result != null) {
+					parameters[parameter.index] = parameter.result[point.getIndex()];
 				} else {
 					parameters[parameter.index] = 0f;
 				}
@@ -112,13 +107,15 @@ public class NaivePipelineExecutor implements PipelineExecutor {
 		return result;
 	}
 
-	private static class UpdatableParameter{
+	private static class UpdatableParameter {
 		public int index;
 		public Consume consumer;
+		public Object[] result;
 
-		public UpdatableParameter(int index, Consume consumer) {
+		public UpdatableParameter(int index, Consume consumer, Object[] result) {
 			this.index = index;
 			this.consumer = consumer;
+			this.result = result;
 		}
 	}
 }
